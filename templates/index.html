@@ -5,7 +5,6 @@
 </head>
 <body>
     <h2>What were the most memorable things in the last month?</h2>
-    <!-- Change the form's action to "/" -->
     <form action="/" method="post">
         <textarea id="userResponse" name="text" rows="4" cols="50"></textarea>
         <br>
@@ -16,6 +15,12 @@
         <div id="result">
             <h3>Sentiment Analysis Result:</h3>
             <p>{{ sentiment_result }}</p>
+        </div>
+    {% endif %}
+    {% if image_url is not none %}
+        <div>
+            <h3>Generated Image:</h3>
+            <img src="{{ image_url }}" alt="Generated Image">
         </div>
     {% endif %}
 </body>
