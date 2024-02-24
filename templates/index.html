@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Input Form</title>
+</head>
+<body>
+    <h2>What were the most memorable things in the last month?</h2>
+    <!-- Change the form's action to "/" -->
+    <form action="/" method="post">
+        <textarea id="userResponse" name="text" rows="4" cols="50"></textarea>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if sentiment_result is not none %}
+        <div id="result">
+            <h3>Sentiment Analysis Result:</h3>
+            <p>{{ sentiment_result }}</p>
+        </div>
+    {% endif %}
+</body>
+</html>
