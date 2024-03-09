@@ -1,8 +1,8 @@
 from flask import Flask, request, render_template
-# from textblob import TextBlob  # Commented out since sentiment analysis is not needed for now
 import openai
 import os
 import traceback
+from test_python import sentiment_percentage  # Assuming the file is renamed to test_python.py
 
 app = Flask(__name__)
 openai_key = os.environ.get('OPENAI_KEY')
@@ -11,22 +11,20 @@ client = openai.OpenAI(api_key=openai_key)
 
 @app.route('/', methods=['GET', 'POST'])
 def analyze_and_generate_image():
-    # sentiment_result = None  # Commented out since sentiment analysis is not needed for now
-    # art_styles = None  # Placeholder for art style suggestions (to be implemented), commented out for now
     image_url = None
 
     if request.method == 'POST':
-        # Collecting data from all the input fields
         emotion = request.form.get('emotion', '')
         location = request.form.get('location', '')
         characters = request.form.get('characters', '')
         atmosphere = request.form.get('atmosphere', '')
         event = request.form.get('event', '')
-    
-        # Creating a detailed prompt using all the input data
-        detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere} atmosphere, evoking {emotion}."
 
-        # Print the combined prompt in the terminal
+        # Perform sentiment analysis on the emotion input
+        sentiment, score = sentiment_percentage(emotion)
+        print(f"Sentiment: {sentiment}, Score: {score}%")  # Print the sentiment result and its score
+
+        detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere} atmosphere, evoking {emotion}."
         print(f"Combined Prompt: {detailed_prompt}")
 
         try:
@@ -43,7 +41,7 @@ def analyze_and_generate_image():
             print(f"An error occurred while generating the image: {e}")
             traceback.print_exc()
 
-    # Passing only the image_url to the template, as the other variables are commented out for now
+
     return render_template('index.html', image_url=image_url)
 
 if __name__ == '__main__':
