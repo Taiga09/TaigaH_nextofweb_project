@@ -2,10 +2,13 @@ from flask import Flask, request, render_template
 import openai
 import os
 import traceback
+from dotenv import load_dotenv
 from test_python import sentiment_percentage  # Assuming the file is renamed to test_python.py
 
+load_dotenv()
+
 app = Flask(__name__)
-openai_key = os.environ.get('OPENAI_KEY')
+openai_key = os.getenv('OPENAI_KEY')
 # Instantiate the OpenAI client
 client = openai.OpenAI(api_key=openai_key)
 
@@ -27,20 +30,41 @@ def analyze_and_generate_image():
         detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere} atmosphere, evoking {emotion}."
         print(f"Combined Prompt: {detailed_prompt}")
 
+        # Formulate the prompt for GPT
+        gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of ‘{score:.2f}’, suggest five art styles that complement this sentiment. Aim for a diverse range of styles that capture the essence of '{sentiment}' while inspiring creativity and imagination in the generated images."
+
+        print(f"GPT Prompt: {gpt_prompt}")  # Print the GPT prompt for debugging
+
         try:
-            # Using the detailed prompt for image generation
+             # Using the detailed prompt for image generation
             response = client.images.generate(
                 model="dall-e-3",
                 prompt=detailed_prompt,
                 n=1,
                 size="1024x1024"
             )
+
+            # Query GPT for art styles
+            gpt_response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=gpt_prompt,
+                max_tokens=100,
+                temperature=0.7
+            )
+
             # Accessing the image URL correctly from the response object
             image_url = response.data[0].url  # Adjusted to use attribute access
+
+            # Extract the art styles from the response
+            art_styles = [choice['text'].strip() for choice in gpt_response.choices]
+            print("Suggested Art Styles:")
+            for idx, style in enumerate(art_styles, start=1):
+                print(f"{idx}. {style}")
+
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
+            print(f"An error occurred while querying GPT: {e}")
             traceback.print_exc()
-
 
     return render_template('index.html', image_url=image_url)
 
