@@ -1,8 +1,6 @@
 from textblob import TextBlob
 import openai
 
-# Instantiate the OpenAI client
-client = openai.OpenAI(api_key='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')
 
 def generate_prompt(emotion, location, characters, atmosphere, event, art_style):
     # Construct the prompt
