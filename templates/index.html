@@ -4,9 +4,23 @@
     <title>User Input Form</title>
 </head>
 <body>
-    <h2>What were the most memorable things in the last month?</h2>
+    <h2>Share your creative ideas</h2>
     <form action="/" method="post">
-        <textarea id="userResponse" name="text" rows="4" cols="50"></textarea>
+        <label for="emotion">Emotion / Mood:</label><br>
+        <input type="text" id="emotion" name="emotion"><br>
+        
+        <label for="location">Location:</label><br>
+        <input type="text" id="location" name="location"><br>
+        
+        <label for="characters">Characters / Objects:</label><br>
+        <input type="text" id="characters" name="characters"><br>
+        
+        <label for="atmosphere">Atmosphere:</label><br>
+        <input type="text" id="atmosphere" name="atmosphere"><br>
+        
+        <label for="event">Event / Action:</label><br>
+        <input type="text" id="event" name="event"><br>
+        
         <br>
         <input type="submit" value="Submit">
     </form>
@@ -15,6 +29,12 @@
         <div id="result">
             <h3>Sentiment Analysis Result:</h3>
             <p>{{ sentiment_result }}</p>
+        </div>
+        <div>
+            <h3>Art Styles:</h3>
+            {% for style in art_styles %}
+                <button type="button">{{ style }}</button>
+            {% endfor %}
         </div>
     {% endif %}
     {% if image_url is not none %}
