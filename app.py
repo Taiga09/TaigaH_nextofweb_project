@@ -45,18 +45,20 @@ def analyze_and_generate_image():
             )
 
             # Query GPT for art styles
-            gpt_response = openai.Completion.create(
-                engine="text-davinci-003",
-                prompt=gpt_prompt,
+            gpt_response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "system", "content": gpt_prompt}],
                 max_tokens=100,
                 temperature=0.7
             )
+
+            print(gpt_response);
 
             # Accessing the image URL correctly from the response object
             image_url = response.data[0].url  # Adjusted to use attribute access
 
             # Extract the art styles from the response
-            art_styles = [choice['text'].strip() for choice in gpt_response.choices]
+            art_styles = [choice['message'].strip() for choice in gpt_response.choices]
             print("Suggested Art Styles:")
             for idx, style in enumerate(art_styles, start=1):
                 print(f"{idx}. {style}")
