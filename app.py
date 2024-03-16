@@ -58,15 +58,19 @@ def analyze_and_generate_image():
             # Accessing the image URL correctly from the response object
             image_url = response.data[0].url  # Adjusted to use attribute access
 
+
             # Extract the art styles from the response
-            #art_styles = [choice['message'].split(", ") for choice in gpt_response.choices]
-            # New line
             art_styles = [choice.message.content.split(", ") for choice in gpt_response.choices]
 
-            
+            # Flatten the list of art styles
+            flattened_styles = [style for styles_list in art_styles for style in styles_list]
+
             print("Suggested Art Styles:")
-            for idx, style in enumerate(art_styles, start=1):
+            for idx, style in enumerate(flattened_styles, start=1):
                 print(f"{idx}. {style}")
+
+            return render_template('index.html', image_url=image_url, art_styles=flattened_styles)
+
 
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
