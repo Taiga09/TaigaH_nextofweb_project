@@ -30,8 +30,9 @@ def analyze_and_generate_image():
         detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere} atmosphere, evoking {emotion}."
         print(f"Combined Prompt: {detailed_prompt}")
 
-        # Formulate the prompt for GPT
-        gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of ‘{score:.2f}’, suggest five art styles that complement this sentiment. Aim for a diverse range of styles that capture the essence of '{sentiment}' while inspiring creativity and imagination in the generated images."
+        # Old instruction
+        #gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of ‘{score:.2f}’, suggest five art styles that complement this sentiment. Aim for a diverse range of styles that capture the essence of '{sentiment}' while inspiring creativity and imagination in the generated images."
+        gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of ‘{score:.2f}’, suggest five art styles that complement this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a diverse range of styles that capture the essence of '{sentiment}' while inspiring creativity and imagination in the generated images."
 
         print(f"GPT Prompt: {gpt_prompt}")  # Print the GPT prompt for debugging
 
