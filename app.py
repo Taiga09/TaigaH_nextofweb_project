@@ -59,7 +59,11 @@ def analyze_and_generate_image():
             image_url = response.data[0].url  # Adjusted to use attribute access
 
             # Extract the art styles from the response
-            art_styles = [choice['message'].strip() for choice in gpt_response.choices]
+            #art_styles = [choice['message'].split(", ") for choice in gpt_response.choices]
+            # New line
+            art_styles = [choice.message.content.split(", ") for choice in gpt_response.choices]
+
+            
             print("Suggested Art Styles:")
             for idx, style in enumerate(art_styles, start=1):
                 print(f"{idx}. {style}")
