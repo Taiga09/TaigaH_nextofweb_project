@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>User Input Form</title>
+    <title>Suggested Art Styles</title>
 </head>
 <body>
     <h2>Share your creative ideas</h2>
@@ -39,6 +40,14 @@
         </div>
         -->
     {% endif %}
+
+    <h2>Suggested Art Styles:</h2>
+    <div>
+        {% for style in art_styles %}
+        <button>{{ style }}</button>
+        {% endfor %}
+    </div>
+
     {% if image_url is not none %}
         <div>
             <h3>Generated Image:</h3>
