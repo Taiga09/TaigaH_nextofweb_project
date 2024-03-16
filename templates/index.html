@@ -26,20 +26,18 @@
         <input type="submit" value="Submit">
     </form>
 
+    <h2>Sentiment Analysis Result:</h2>
+    <p>{{ sentiment_result }}</p>
+
+    <!--
     {% if sentiment_result is not none %}
         <div id="result">
             <h3>Sentiment Analysis Result:</h3>
             <p>{{ sentiment_result }}</p>
         </div>
-        <!--
-        <div>
-            <h3>Art Styles:</h3>
-            {% for style in art_styles %}
-                <button type="button">{{ style }}</button>
-            {% endfor %}
-        </div>
-        -->
+
     {% endif %}
+    -->
 
     <h2>Suggested Art Styles:</h2>
     <div>
