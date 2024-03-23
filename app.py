@@ -29,7 +29,7 @@ def analyze_and_generate_image():
         print(f"Sentiment: {sentiment}, Score: {score}%")  # Print the sentiment result and its score
 
         # Render the template with the sentiment result and art styles
-        return render_template('index.html', sentiment_result=f"Sentiment: {sentiment}, Score: {score}%")
+        #return render_template('index.html', sentiment_result=f"Sentiment: {sentiment}, Score: {score}%")
 
 
         detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere} atmosphere, evoking {emotion}."
@@ -81,6 +81,10 @@ def analyze_and_generate_image():
             traceback.print_exc()
 
     return render_template('index.html', image_url=image_url)
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    return '[{"msg":"error"}]'
 
 if __name__ == '__main__':
     app.run(debug=True)
