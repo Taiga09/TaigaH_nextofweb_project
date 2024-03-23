@@ -1,90 +1,81 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 import openai
 import os
 import traceback
 from dotenv import load_dotenv
-from test_python import sentiment_percentage  # Assuming the file is renamed to test_python.py
+from test_python import sentiment_percentage, generate_prompt
 
-load_dotenv()
+load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
-openai_key = os.getenv('OPENAI_KEY')
-# Instantiate the OpenAI client
-client = openai.OpenAI(api_key=openai_key)
+openai_key = os.getenv('OPENAI_KEY')  # Get the OpenAI API key from environment variables
+client = openai.OpenAI(api_key=openai_key)  # Instantiate the OpenAI client with the API key
 
 @app.route('/', methods=['GET', 'POST'])
-def analyze_and_generate_image():
-    image_url = None
-
+def home():
     if request.method == 'POST':
-        emotion = request.form.get('emotion', '')
-        location = request.form.get('location', '')
-        characters = request.form.get('characters', '')
-        atmosphere = request.form.get('atmosphere', '')
-        event = request.form.get('event', '')
+        # Collect form data
+        form_data = {
+            'emotion': request.form.get('emotion', ''),
+            'location': request.form.get('location', ''),
+            'characters': request.form.get('characters', ''),
+            'atmosphere': request.form.get('atmosphere', ''),
+            'event': request.form.get('event', '')
+        }
 
-  
-        # new line of code for sentiment to output them in html
-        sentiment, score = sentiment_percentage(emotion)
-        print(f"Sentiment: {sentiment}, Score: {score}%")  # Print the sentiment result and its score
+        # Perform sentiment analysis on the emotion
+        sentiment, score = sentiment_percentage(form_data['emotion'])
 
-        # Render the template with the sentiment result and art styles
-        #return render_template('index.html', sentiment_result=f"Sentiment: {sentiment}, Score: {score}%")
+        # Generate art styles based on sentiment (adjust this logic as needed)
+        art_styles = ['Style 1', 'Style 2', 'Style 3', 'Style 4', 'Style 5']
 
+        # Render the sentiment_and_styles template directly, passing the form data and sentiment analysis results
+        return render_template('sentiment_and_styles.html', form_data=form_data, sentiment=sentiment, score=score, art_styles=art_styles)
 
-        detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere} atmosphere, evoking {emotion}."
-        print(f"Combined Prompt: {detailed_prompt}")
-
-        gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of ‘{score:.2f}’, suggest five art styles that complement this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a diverse range of styles that capture the essence of '{sentiment}' while inspiring creativity and imagination in the generated images."
-
-        print(f"GPT Prompt: {gpt_prompt}")  # Print the GPT prompt for debugging
-
-        try:
-             # Using the detailed prompt for image generation
-            response = client.images.generate(
-                model="dall-e-3",
-                prompt=detailed_prompt,
-                n=1,
-                size="1024x1024"
-            )
-
-            # Query GPT for art styles
-            gpt_response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "system", "content": gpt_prompt}],
-                max_tokens=100,
-                temperature=0.7
-            )
-
-            print(gpt_response);
-
-            # Accessing the image URL correctly from the response object
-            image_url = response.data[0].url  # Adjusted to use attribute access
+    return render_template('index.html')
 
 
-            # Extract the art styles from the response
-            art_styles = [choice.message.content.split(", ") for choice in gpt_response.choices]
+@app.route('/sentiment_and_styles', methods=['GET', 'POST'])
+def sentiment_and_styles():
+    if request.method == 'GET':
+        # Retrieve sentiment analysis result passed from the previous page
+        sentiment = request.args.get('sentiment')
+        score = request.args.get('score')
 
-            # Flatten the list of art styles
-            flattened_styles = [style for styles_list in art_styles for style in styles_list]
+        # Generate art styles based on sentiment (this part will be adjusted to actually generate the art styles)
+        art_styles = ['Style 1', 'Style 2', 'Style 3', 'Style 4', 'Style 5']
 
-            print("Suggested Art Styles:")
-            for idx, style in enumerate(flattened_styles, start=1):
-                print(f"{idx}. {style}")
+        return render_template('sentiment_and_styles.html', sentiment=sentiment, score=score, art_styles=art_styles)
 
-            return render_template('index.html', image_url=image_url, art_styles=flattened_styles)
+    elif request.method == 'POST':
+        # Handle art style selection and redirect to the image generation page
+        # You might need to pass selected_style and form_data (or its components) as parameters
+        selected_style = request.form.get('selected_style')
 
+        return redirect(url_for('generate_image', selected_style=selected_style))
 
-        except Exception as e:
-            print(f"An error occurred while generating the image: {e}")
-            print(f"An error occurred while querying GPT: {e}")
-            traceback.print_exc()
+@app.route('/generate_image', methods=['POST'])
+def generate_image():
+    # Extract the form data and the selected art style
+    emotion = request.form.get('emotion')
+    location = request.form.get('location')
+    characters = request.form.get('characters')
+    atmosphere = request.form.get('atmosphere')
+    event = request.form.get('event')
+    selected_style = request.form.get('selected_style')
 
-    return render_template('index.html', image_url=image_url)
+    # Construct the prompt for image generation using the extracted data
+    prompt = generate_prompt(emotion, location, characters, atmosphere, event, selected_style)
 
-@app.route('/test', methods=['GET', 'POST'])
-def test():
-    return '[{"msg":"error"}]'
+    # Call OpenAI's API to generate the image based on the prompt
+    # Note: Implement the actual API call according to OpenAI's documentation
+    # Make sure to handle exceptions and errors
+    try:
+        response = client.create_image(prompt)  # Adjust this to the actual API call
+        image_url = response['data']['url']  # Adjust according to the actual response structure
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        image_url = None
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    # Render a template to display the generated image
+    return render_template('generated_image.html', image_url=image_url)

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentiment Analysis and Art Style Selection</title>
+</head>
+<body>
+    <h1>Sentiment Analysis Result</h1>
+    <p>Sentiment: {{ sentiment }} | Score: {{ score }}</p>
+
+    <h2>Select an Art Style</h2>
+    <form action="{{ url_for('generate_image') }}" method="post">
+        <!-- Hidden fields to carry over the original form data -->
+        <input type="hidden" name="emotion" value="{{ form_data['emotion'] }}">
+        <input type="hidden" name="location" value="{{ form_data['location'] }}">
+        <input type="hidden" name="characters" value="{{ form_data['characters'] }}">
+        <input type="hidden" name="atmosphere" value="{{ form_data['atmosphere'] }}">
+        <input type="hidden" name="event" value="{{ form_data['event'] }}">
+
+        <!-- Display art styles as buttons or another selectable element -->
+        {% for style in art_styles %}
+            <button type="submit" name="selected_style" value="{{ style }}">{{ style }}</button>
+        {% endfor %}
+    </form>
+</body>
+</html>
