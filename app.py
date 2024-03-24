@@ -24,12 +24,15 @@ def home():
             'event': request.form.get('event', '')
         }
 
-        # Perform sentiment analysis (ensure this function returns sentiment and score)
-        sentiment, score = sentiment_percentage('emotion')
+        # Perform sentiment analysis
+        sentiment, score = sentiment_percentage(form_data['emotion'])
         print(f"Sentiment: {sentiment}, Score: {score}%")
 
-        # This may be wrong, but I think it's fine
-        return redirect(url_for('sentiment_and_styles', form_data=form_data, sentiment=sentiment, score=score))
+        #Serialize form_data to JSON srting
+        form_data_json = json.dumps(form_data)
+
+        # Redirect to the sentiment_and_styles route, passing the form data, sentiment, and score as query parameters
+        return redirect(url_for('sentiment_and_styles', form_data=form_data_json, sentiment=sentiment, score=score))
 
     # Render the home page template
     return render_template('index.html')
