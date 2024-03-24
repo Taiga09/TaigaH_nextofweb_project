@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for
+import json # Import the json module to serialize the form_data
 import openai
 import os
 from dotenv import load_dotenv
@@ -13,6 +14,7 @@ client = openai.OpenAI(api_key=openai_key)
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
+
         # Collect form data
         form_data = {
             'emotion': request.form.get('emotion', ''),
@@ -23,10 +25,10 @@ def home():
         }
 
         # Perform sentiment analysis (ensure this function returns sentiment and score)
-        sentiment, score = sentiment_percentage(form_data['emotion'])
+        sentiment, score = sentiment_percentage('emotion')
+        print(f"Sentiment: {sentiment}, Score: {score}%")
 
-        # Redirect to the next route, passing the form data and analysis results
-        # Consider using sessions or a database for complex data
+        # This may be wrong, but I think it's fine
         return redirect(url_for('sentiment_and_styles', form_data=form_data, sentiment=sentiment, score=score))
 
     # Render the home page template
@@ -37,7 +39,7 @@ def sentiment_and_styles():
     if request.method == 'POST':
         # Process form submission from the sentiment_and_styles page
         selected_style = request.form.get('selected_style')
-        form_data = request.form.get('form_data')  # Make sure to parse this correctly
+        form_data = request.form.get('form_data') 
 
         # Redirect to the image generation route with the selected style and form data
         return redirect(url_for('generate_image', selected_style=selected_style, form_data=form_data))
@@ -46,7 +48,7 @@ def sentiment_and_styles():
         # Extract query parameters from the URL
         sentiment = request.args.get('sentiment')
         score = request.args.get('score')
-        form_data = request.args.get('form_data')  # Make sure to parse this correctly
+        form_data = request.args.get('form_data')
 
         # Construct GPT prompt for art styles
         gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of '{score}', suggest five art styles that complement this sentiment with just the style name, comma separated value format for example: Deco,Nuevo,Contemporary,Traditional,Modern"
@@ -64,11 +66,6 @@ def sentiment_and_styles():
             # Extract art styles from the GPT response and flatten the list
             art_styles =  gpt_response.choices[0].message.content.split(",")
             # print(art_styles)   
-
-
-            # print("Suggested Art Styles:")
-            # for idx, style in enumerate(art_styles, start=1):
-            #     print(f"{idx}. {style}")
 
         except Exception as e:
             print(f"An error occurred while querying GPT: {e}")
