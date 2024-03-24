@@ -1,14 +1,18 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, session
 import json # Import the json module to serialize the form_data
 import openai
 import os
 from dotenv import load_dotenv
 from test_python import sentiment_percentage  # Ensure this function is implemented correctly
+import os, secrets
+#print(secrets.token_hex(16))
 
 load_dotenv()
 
 app = Flask(__name__)
 openai_key = os.getenv('OPENAI_KEY')
+app.secret_key = os.getenv('SECRET_KEY')
+
 client = openai.OpenAI(api_key=openai_key)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -40,21 +44,42 @@ def home():
 @app.route('/sentiment_and_styles', methods=['GET', 'POST'])
 def sentiment_and_styles():
     if request.method == 'POST':
+
         # Process form submission from the sentiment_and_styles page
         selected_style = request.form.get('selected_style')
-        form_data = request.form.get('form_data') 
+
+        # Retrieve form_data from session and convert it back from JSON string to a dictionary
+        form_data_json = session.get('form_data')
+        if form_data_json:
+            form_data = json.loads(form_data_json) 
+        else:
+            form_data = {} #Default to empty dict if nothing in session
+
+        # Serialize form_data (convert to JSON string) again to pass along to the next route
+        form_data_json = json.dumps(form_data)
 
         # Redirect to the image generation route with the selected style and form data
-        return redirect(url_for('generate_image', selected_style=selected_style, form_data=form_data))
+        return redirect(url_for('generate_image', selected_style=selected_style, form_data=form_data_json))
+
 
     if request.method == 'GET':
-        # Extract query parameters from the URL
+
+        # Retreve form_data from session and conevrt it back grom JSON string to a dicionary
+        form_data_json = session.get('form_data')
+        if form_data_json:
+            form_data = json.loads(form_data_json)
+        else:
+            form_data = {}
+
+        # Extract other query parameteres
         sentiment = request.args.get('sentiment')
         score = request.args.get('score')
-        form_data = request.args.get('form_data')
-
+        
         # Construct GPT prompt for art styles
-        gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of '{score}', suggest five art styles that complement this sentiment with just the style name, comma separated value format for example: Deco,Nuevo,Contemporary,Traditional,Modern"
+        # Convert sentiment score (string) into float
+        score = float(request.args.get('score', 0))
+        gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of ‘{score:.2f}’, suggest five art styles that complement this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a diverse range of styles that capture the essence of '{sentiment}' while inspiring creativity and imagination in the generated images."
+        print(gpt_prompt)
 
         try:
             # Query GPT for art styles using the chat API
