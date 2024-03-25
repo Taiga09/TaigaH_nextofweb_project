@@ -113,9 +113,9 @@ def generate_image():
         location = form_data.get('location', '')
         atmosphere = form_data.get('atmosphere', '')
         emotion = form_data.get('emotion', '')
-        selected_style = form_data.get('selected_style', '')
+        selected_style = request.form.get('selected_style', '')
         # Debugging
-        #print("Form Data:", form_data)
+        print("Selected_style:", selected_style)
 
         # Construct the detailed prompt
         detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere}, evoking {emotion} in the style of {selected_style}."
