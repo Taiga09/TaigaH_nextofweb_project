@@ -86,6 +86,7 @@ def sentiment_and_styles():
                 max_tokens=100,
                 temperature=0.7
             )
+            
             print(gpt_response)   
             # Extract art styles from the GPT response and flatten the list
             art_styles =  gpt_response.choices[0].message.content.split(",")
@@ -112,13 +113,12 @@ def generate_image():
         location = form_data.get('location', '')
         atmosphere = form_data.get('atmosphere', '')
         emotion = form_data.get('emotion', '')
-        #art_styles = form_data.get('selected_style', '')
-
+        selected_style = form_data.get('selected_style', '')
         # Debugging
         #print("Form Data:", form_data)
 
         # Construct the detailed prompt
-        detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere}, evoking {emotion}."
+        detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere}, evoking {emotion} in the style of {selected_style}."
         print(f"Combined Prompt: {detailed_prompt}")
 
         try:
