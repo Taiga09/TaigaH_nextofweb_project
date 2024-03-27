@@ -25,32 +25,19 @@
         <br>
         <input type="submit" value="Submit">
     </form>
-
-    <h2>Sentiment Analysis Result:</h2>
-    <p>{{ sentiment_result }}</p>
-
-    <!--
-    {% if sentiment_result is not none %}
-        <div id="result">
-            <h3>Sentiment Analysis Result:</h3>
-            <p>{{ sentiment_result }}</p>
-        </div>
-
-    {% endif %}
-    -->
-
-    <h2>Suggested Art Styles:</h2>
+    
     <div>
         {% for style in art_styles %}
         <button>{{ style }}</button>
         {% endfor %}
     </div>
-
+    <!--
     {% if image_url is not none %}
         <div>
             <h3>Generated Image:</h3>
             <img src="{{ image_url }}" alt="Generated Image">
         </div>
+    -->
     {% endif %}
 </body>
 </html>
