@@ -8,6 +8,9 @@
     <h1>Your Generated Image</h1>
     <h2>Like what you see? Add your email to get this photo!</h2>
     <input type="email" name="user_email" placeholder="Enter your email" required>
+    
+    <!-- Submit button -->
+    <button type="submit">Send Image</button>
 
     {% if image_url %}
         <img src="{{ image_url }}" alt="Generated Image">
