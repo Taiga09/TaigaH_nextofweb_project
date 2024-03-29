@@ -152,19 +152,21 @@ def generate_image():
 
         # Check is the user_emaail was provided
         if user_email:
-            try;
+            try:
                 msg = Message("Your Generated Image", recipients=[user_email])
-                with app.open_resource(image_url) as img:
-                    msg.attach("image.png", "image/png", img.read())
+
+                # Include the image as an HTML img tag using the image_url
+                msg.html = f"<p>Here's your generated image:</p><img src='{image_url}' alt='Generated Image'>"
              
                 mail.send(msg)
-                return "Email sent! Check your inbox."
+                email_sent = True
 
             except Exception as e:
-                return f"An error occurred while sending the email: {str(e)}"
+                print (f"An error occurred while sending the email: {str(e)}")
+                email_sent = False
 
         
-        return render_template('generated_image.html', image_url=image_url)
+        return render_template('generated_image.html', image_url=image_url, email_sent=email_sent)
 
    
     else:

@@ -18,5 +18,16 @@
         <p>Sorry, there was an error generating your image.</p>
     {% endif %}
 
+    <!-- Email status message -->
+    {% if email_sent is defined %}
+        {% if email_sent %}
+            <p>Email has been sent successfully! Check your inbox.</p>
+        {% else %}  
+            <p>Sorry, there was an error sending the email. Please try again.</p>
+        {% endif %}
+    {% endif %}
+
+
+
 </body>
 </html>
