@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session
+from flask_mail import Mail, Message
 import json # Import the json module to serialize the form_data
 import openai
 import os
@@ -14,6 +15,17 @@ openai_key = os.getenv('OPENAI_KEY')
 app.secret_key = os.getenv('SECRET_KEY')
 
 client = openai.OpenAI(api_key=openai_key)
+
+# Flask-Mail configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587  # Use 587 for TLS
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'taigah.spring24.accd@gmail.com'  # Your Gmail address
+app.config['MAIL_PASSWORD'] = 'jfpy whwq tkeo kbam'  # Your App Password
+app.config['MAIL_DEFAULT_SENDER'] = 'taigah.spring24.accd@gmail.com'  # Your Gmail address (can be the same)
+
+mail = Mail(app)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -133,9 +145,28 @@ def generate_image():
 
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
+
+
+        # Send email
+        user_email = request.form.get('user_email', '')
+
+        # Check is the user_emaail was provided
+        if user_email:
+            try;
+                msg = Message("Your Generated Image", recipients=[user_email])
+                with app.open_resource(image_url) as img:
+                    msg.attach("image.png", "image/png", img.read())
+             
+                mail.send(msg)
+                return "Email sent! Check your inbox."
+
+            except Exception as e:
+                return f"An error occurred while sending the email: {str(e)}"
+
         
         return render_template('generated_image.html', image_url=image_url)
 
+   
     else:
         return redirect(url_for('home'))
 
