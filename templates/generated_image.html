@@ -13,10 +13,11 @@
         <button type="submit">Send Image</button>
     </form>
 
-    {% if image_url %}
-        <img src="{{ url_for('static', filename='framed_image.jpg')}}" alt="Polaroid Image">
+    <!-- Display an image on a screen -->
+    {% if session['framed_image_filename'] %}
+    <img src="{{ url_for('static', filename=session['framed_image_filename']) }}" alt="Polaroid Image">
     {% else %}
-        <p>Sorry, there was an error generating your image.</p>
+        <p>Sorry, there was an error displaying your image.</p>
     {% endif %}
 
     <!-- Email status message -->

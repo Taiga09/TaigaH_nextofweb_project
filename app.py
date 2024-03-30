@@ -163,7 +163,7 @@ def generate_image():
             os.unlink(temp_image_file.name)
 
             # Update the session or context with the filename of the polaroid images
-            session['framed_image_filename'] = framed_image_filename
+            session['framed_image_filename'] = os.path.relpath(framed_image_filename, 'static')
             
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
