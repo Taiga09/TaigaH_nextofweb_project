@@ -179,10 +179,10 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
     original_image = Image.open(original_image_path)
 
     # Calculate the new size with the frame, assuming the frame width is 10% of the original image width
-    frame_width = int(original_image.width * 0.1)
+    frame_width = int(original_image.width * 0.08)
     new_width = original_image.width + 2 * frame_width
     # Make the frame's height larger to mimic a Polaroid (for the bottom part)
-    new_height = original_image.height + 3 * frame_width
+    new_height = original_image.height + 4 * frame_width
 
     # Create a new image with white background
     polaroid_image = Image.new("RGB", (new_width, new_height), "white")
