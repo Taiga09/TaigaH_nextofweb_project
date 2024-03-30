@@ -7,10 +7,11 @@
 <body>
     <h1>Your Generated Image</h1>
     <h2>Like what you see? Add your email to get this photo!</h2>
-    <input type="email" name="user_email" placeholder="Enter your email" required>
-    
-    <!-- Submit button -->
-    <button type="submit">Send Image</button>
+
+    <form action ="{{ url_for('send_email') }}" method="post">
+        <input type="email" name="user_email" placeholder="Enter your email" required>
+        <button type="submit">Send Image</button>
+    </form>
 
     {% if image_url %}
         <img src="{{ image_url }}" alt="Generated Image">
@@ -19,14 +20,13 @@
     {% endif %}
 
     <!-- Email status message -->
-    {% if email_sent is defined %}
-        {% if email_sent %}
-            <p>Email has been sent successfully! Check your inbox.</p>
-        {% else %}  
-            <p>Sorry, there was an error sending the email. Please try again.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
         {% endif %}
-    {% endif %}
-
+    {% endwith %}
 
 
 </body>

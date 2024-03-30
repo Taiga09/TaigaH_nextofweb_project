@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 from flask_mail import Mail, Message
+from flask import flash # send message after image generation
 import json # Import the json module to serialize the form_data
 import openai
 import os
@@ -21,7 +22,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587  # Use 587 for TLS
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'taigah.spring24.accd@gmail.com'  # Your Gmail address
-app.config['MAIL_PASSWORD'] = 'jfpy whwq tkeo kbam'  # Your App Password
+app.config['MAIL_PASSWORD'] = 'jfpywhwqtkeokbam'  # Your App Password
 app.config['MAIL_DEFAULT_SENDER'] = 'taigah.spring24.accd@gmail.com'  # Your Gmail address (can be the same)
 
 mail = Mail(app)
@@ -146,31 +147,42 @@ def generate_image():
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
 
-
-        # Send email
-        user_email = request.form.get('user_email', '')
-
-        # Check is the user_emaail was provided
-        if user_email:
-            try:
-                msg = Message("Your Generated Image", recipients=[user_email])
-
-                # Include the image as an HTML img tag using the image_url
-                msg.html = f"<p>Here's your generated image:</p><img src='{image_url}' alt='Generated Image'>"
-             
-                mail.send(msg)
-                email_sent = True
-
-            except Exception as e:
-                print (f"An error occurred while sending the email: {str(e)}")
-                email_sent = False
-
+        # Store the image URL in the session
+        image_url = response.data[0].url
+        # debug
+        print("Storing image_url in session", image_url)
+        session['image_url'] = image_url  
         
-        return render_template('generated_image.html', image_url=image_url, email_sent=email_sent)
+        return render_template('generated_image.html', image_url=image_url)
+    
 
-   
     else:
         return redirect(url_for('home'))
+
+
+# Send email
+@app.route('/send_email', methods=['POST'])
+def send_email():
+    user_email = request.form.get('user_email', '')
+    image_url = session.get('image_url', None)  # Assuming you store the generated image URL in the session
+
+    if user_email and image_url:
+        try:
+            msg = Message("Your Generated Image", recipients=[user_email])
+            msg.html = f"<p>Here's your generated image:</p><img src='{image_url}' alt='Generated Image'>"
+            
+            # Send the email
+            mail.send(msg)
+            flash("Email sent successfully!", "success")  # Provide user feedback
+            print("Email sent successfully to:", user_email)
+        except Exception as e:
+            flash(f"An error occurred while sending the email: {e}", "error")  # Provide user feedback on failure
+            print(f"An error occurred while sending the email: {e}")
+
+
+    return redirect(url_for('generate_image'))  # Redirect back to the image page or another confirmation page
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
