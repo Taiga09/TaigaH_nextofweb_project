@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <title>Sentiment Analysis and Art Style Selection</title>
 </head>
 <body>
@@ -22,5 +23,25 @@
             <button type="submit" name="selected_style" value="{{ style }}">{{ style }}</button>
         {% endfor %}
     </form>
+
+    <!-- Loading Animation -->
+    <div id="loading" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!--JavaScript to show & hide loading animation-->
+    <script>
+        window.onload = function() {
+            // Hide the loading animation on page load
+            document.getElementById('loading').style.display = 'none';
+        
+            // Show loading animation on form submission
+            var form = document.querySelector('form');
+            form.onsubmit = function() {
+                document.getElementById('loading').style.display = 'flex'; // Use 'flex' to activate flexbox alignment
+            };
+        };
+    </script>
+
 </body>
 </html>
