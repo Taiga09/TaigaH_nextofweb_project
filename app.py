@@ -1,8 +1,13 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 from flask_mail import Mail, Message
 from flask import flash # send message after image generation
+from flask import send_from_directory
+from datetime import datetime
+import requests
+from PIL import Image, ImageDraw, ImageFont
 import json # Import the json module to serialize the form_data
 import openai
+import tempfile
 import os
 from dotenv import load_dotenv
 from test_python import sentiment_percentage  # Ensure this function is implemented correctly
@@ -144,33 +149,82 @@ def generate_image():
             )
             image_url = response.data[0].url
 
+            # Download the image to a temporary file
+            response = requests.get(image_url)  # Use a different variable name to avoid confusion with the outer `response`
+            temp_image_file = tempfile.NamedTemporaryFile(delete=False)
+            temp_image_file.write(response.content)
+            temp_image_file.flush()  # Ensure all data is written to the file
+            temp_image_file.close()
+
+            # Create a polaroid version of the image
+            framed_image_filename = create_polaroid_image(temp_image_file.name, 'static')
+            
+            # Cleanup the temporary original image file
+            os.unlink(temp_image_file.name)
+
+            # Update the session or context with the filename of the polaroid images
+            session['framed_image_filename'] = framed_image_filename
+            
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
 
-        # Store the image URL in the session
-        image_url = response.data[0].url
-        # debug
-        print("Storing image_url in session", image_url)
-        session['image_url'] = image_url  
-        
-        return render_template('generated_image.html', image_url=image_url)
-    
+        return render_template('generated_image.html', image_filename=session.get('framed_image_filename'))
 
     else:
         return redirect(url_for('home'))
+
+# Making polaroids
+def create_polaroid_image(original_image_path, output_directory, caption=None):
+    # Load the original image
+    original_image = Image.open(original_image_path)
+
+    # Calculate the new size with the frame, assuming the frame width is 10% of the original image width
+    frame_width = int(original_image.width * 0.1)
+    new_width = original_image.width + 2 * frame_width
+    # Make the frame's height larger to mimic a Polaroid (for the bottom part)
+    new_height = original_image.height + 3 * frame_width
+
+    # Create a new image with white background
+    polaroid_image = Image.new("RGB", (new_width, new_height), "white")
+
+    # Paste the original image onto the centered frame
+    polaroid_image.paste(original_image, (frame_width, frame_width))
+
+    # Optionally add a caption to the bottom part of the frame
+    if caption:
+        draw = ImageDraw.Draw(polaroid_image)
+        # Use a truetype font, you may need to adjust the path to a font file
+        font = ImageFont.truetype("arial.ttf", size=frame_width)
+        # Calculate text position (centered)
+        text_width, text_height = draw.textsize(caption, font=font)
+        text_x = (new_width - text_width) // 2
+        text_y = new_height - frame_width - text_height // 2
+        # Draw the text
+        draw.text((text_x, text_y), caption, fill="black", font=font)
+
+    # Generate a unique filename for the framed image using a timestamp
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    framed_image_filename = f'{timestamp}.jpg'
+    framed_image_path = os.path.join(output_directory, framed_image_filename)
+
+    # Save the resulting image
+    polaroid_image.save(framed_image_path)
+
+    return framed_image_path
 
 
 # Send email
 @app.route('/send_email', methods=['POST'])
 def send_email():
     user_email = request.form.get('user_email', '')
-    image_url = session.get('image_url', None)  # Assuming you store the generated image URL in the session
+    framed_image_filename = session.get('framed_image_filename', None)  # Assuming you store the generated image URL in the session
 
-    if user_email and image_url:
+    if user_email and framed_image_filename:
         try:
             msg = Message("Your Generated Image", recipients=[user_email])
-            msg.html = f"<p>Here's your generated image:</p><img src='{image_url}' alt='Generated Image'>"
-            
+            with app.open_resource(os.path.join('static', framed_image_filename)) as img:
+                msg.attach(framed_image_filename, "image/jpeg", img.read())
+
             # Send the email
             mail.send(msg)
             flash("Email sent successfully!", "success")  # Provide user feedback
@@ -179,10 +233,7 @@ def send_email():
             flash(f"An error occurred while sending the email: {e}", "error")  # Provide user feedback on failure
             print(f"An error occurred while sending the email: {e}")
 
-
     return redirect(url_for('generate_image'))  # Redirect back to the image page or another confirmation page
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

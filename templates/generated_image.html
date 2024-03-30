@@ -14,7 +14,7 @@
     </form>
 
     {% if image_url %}
-        <img src="{{ image_url }}" alt="Generated Image">
+        <img src="{{ url_for('static', filename='framed_image.jpg')}}" alt="Polaroid Image">
     {% else %}
         <p>Sorry, there was an error generating your image.</p>
     {% endif %}
