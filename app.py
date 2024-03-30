@@ -224,16 +224,13 @@ def send_email():
             msg = Message("Your Generated Image", recipients=[user_email])
             with app.open_resource(os.path.join('static', framed_image_filename)) as img:
                 msg.attach(framed_image_filename, "image/jpeg", img.read())
-
             # Send the email
             mail.send(msg)
             flash("Email sent successfully!", "success")  # Provide user feedback
-            print("Email sent successfully to:", user_email)
         except Exception as e:
             flash(f"An error occurred while sending the email: {e}", "error")  # Provide user feedback on failure
-            print(f"An error occurred while sending the email: {e}")
 
-    return redirect(url_for('generate_image'))  # Redirect back to the image page or another confirmation page
+    return render_template('feedback.html')  # Render feedback template
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -17,7 +17,7 @@ def sentiment_percentage(text):
         percentage = polarity * 100  # Convert to percentage
     elif polarity < 0:
         sentiment = "negative"
-        percentage = abs(polarity) * 100  # Convert to percentage, making it positive
+        percentage = abs(polarity) * 100  # Convert to percentage
     else:
         sentiment = "neutral"
         percentage = 0  # Neutral sentiment
