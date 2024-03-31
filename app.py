@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 import importlib
 import test_python
 import os
-#print(secrets.token_hex(16))
+
 importlib.reload(test_python)
 load_dotenv()
 
@@ -117,6 +117,36 @@ def sentiment_and_styles():
 
         # Render the sentiment and styles template with the data
         return render_template('sentiment_and_styles.html', form_data=form_data, sentiment=sentiment, score=score, art_styles=art_styles)
+    
+# Function to construct the detailed prompt
+import re
+    
+def construct_detailed_prompt(characters, event, location, atmosphere, emotion, selected_style):
+    # Check if the location starts with a preposition
+    preposition_pattern = r'^(in|at)\s+'
+    location_has_preposition = bool(re.match(preposition_pattern, location, re.IGNORECASE))
+
+    # Determine if the location starts with a vowel sound
+    vowel_sounds = ['a', 'e', 'i', 'o', 'u']
+    location_words = re.sub(preposition_pattern, '', location, flags=re.IGNORECASE).strip()
+    location_starts_with_vowel = location_words.lower()[0] in vowel_sounds if location_words else False
+
+    # Construct the detailed prompt
+    detailed_prompt = f"A digital painting of {characters} {event} "
+
+    if location:
+        if location_has_preposition:
+            detailed_prompt += f"{location}, "
+        else:
+            if location_starts_with_vowel:
+                detailed_prompt += f"in an {location_words}, "
+            else:
+                detailed_prompt += f"in a {location_words}, "
+
+    detailed_prompt += f"creating {atmosphere} atmosphere, evoking {emotion} in the style of {selected_style}."
+
+    return detailed_prompt
+
 
 @app.route('/generate_image', methods=['GET', 'POST'])
 def generate_image():
@@ -133,13 +163,13 @@ def generate_image():
         atmosphere = form_data.get('atmosphere', '')
         emotion = form_data.get('emotion', '')
         selected_style = request.form.get('selected_style', '')
-        # Debugging
+
         print("Selected_style:", selected_style)
 
         # Construct the detailed prompt
-        detailed_prompt = f"A digital painting of {characters} {event} in {location}, creating an {atmosphere}, evoking {emotion} in the style of {selected_style}."
+        detailed_prompt = construct_detailed_prompt(characters, event, location, atmosphere, emotion, selected_style)
         print(f"Combined Prompt: {detailed_prompt}")
-
+        
         try:
             # Using the detailed prompt for image generation
             response = client.images.generate(
