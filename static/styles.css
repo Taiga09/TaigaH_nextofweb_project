@@ -35,3 +35,51 @@
     border-radius: 5px;
     font-weight: bold;
 }
+
+#emotion {
+    background: url('tornpaper.png') no-repeat center center;
+    width: 40%; 
+    border: none;
+    padding: 40px 20px; 
+    box-sizing: border-box; 
+    margin: 20px;
+}
+
+#location {
+    background: url('tornpaper.png') no-repeat center center;
+    width: 20%; 
+    border: none;
+    padding: 40px 20px; 
+    box-sizing: border-box; 
+    margin: 20px;
+}
+
+#characters {
+    background: url('tornpaper.png') no-repeat center center;
+    width: 20%; 
+    border: none;
+    padding: 40px 20px; 
+    box-sizing: border-box; 
+    margin: 20px;
+}
+
+#atmosphere {
+    background: url('tornpaper.png') no-repeat center center;
+    width: 20%; 
+    border: none;
+    padding: 40px 20px; 
+    box-sizing: border-box; 
+    margin: 20px;
+}
+
+#event {
+    background: url('tornpaper.png') no-repeat center center;
+    width: 20%; 
+    border: none;
+    padding: 40px 20px; 
+    box-sizing: border-box; 
+    margin: 20px;
+}
+  
+  
+  

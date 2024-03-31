@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <title>User Input Form</title>
     <title>Suggested Art Styles</title>
 </head>
 <body>
     <h2>Share your creative ideas</h2>
     <form action="/" method="post">
+        <div class="input-background">
+            <input type="text" id="emotion" name="emotion" autocomplete="off"  placeholder="How did you feel?"><br>
+        </div> 
+
+        <div class="input-background">
+            <input type="text" id="location" name="location" autocomplete="off"  placeholder="Location"><br>
+        </div> 
+
+        <div class="input-background">
+            <input type="text" id="characters" name="characters" autocomplete="off"  placeholder="characters"><br>
+        </div> 
+
+        <div class="input-background">
+            <input type="text" id="atmosphere" name="atmosphere" autocomplete="off"  placeholder="atmosphere"><br>
+        </div> 
+        
+        <div class="input-background">
+            <input type="text" id="event" name="event" autocomplete="off"  placeholder="event"><br>
+        </div> 
+        
+        <br>
+        <input type="submit" value="Submit">
+        <!--
         <label for="emotion">Emotion / Mood:</label><br>
         <input type="text" id="emotion" name="emotion" autocomplete="off"><br>
         
@@ -22,8 +46,9 @@
         <label for="event">Event / Action:</label><br>
         <input type="text" id="event" name="event" autocomplete="off"><br>
         
-        <br>
-        <input type="submit" value="Submit">
+    
+        -->
+         
     </form>
     
     <div>
