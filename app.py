@@ -225,7 +225,15 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
         draw = ImageDraw.Draw(polaroid_image)
         font = ImageFont.truetype("./fonts/Caveat.ttf", size=int(frame_width* 0.5))
         max_text_width = new_width - 2 * frame_width  # Maximum width for the text
-        text_position = ((new_width - max_text_width) // 2, new_height - 3 * frame_width)
+        caption_height = font.getmask(caption).size[1] # Get the height of caption
+
+        image_bottom = original_image.height + frame_width
+        frame_bottom = new_height - frame_width
+        available_space = frame_bottom - image_bottom
+        text_y = image_bottom + (available_space - caption_height) // 2
+        text_position = ((new_width - max_text_width) // 2, text_y)
+
+
         draw_caption(draw, caption, text_position, font, max_text_width)
 
 
