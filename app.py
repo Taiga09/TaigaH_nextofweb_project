@@ -157,7 +157,7 @@ def generate_image():
             temp_image_file.close()
 
             # Create a polaroid version of the image
-            framed_image_filename = create_polaroid_image(temp_image_file.name, 'static')
+            framed_image_filename = create_polaroid_image(temp_image_file.name, 'static', caption=detailed_prompt)
             
             # Cleanup the temporary original image file
             os.unlink(temp_image_file.name)
@@ -173,7 +173,39 @@ def generate_image():
     else:
         return redirect(url_for('home'))
 
-# Making polaroids
+# Define the function to draw text within a specified width
+def draw_caption(draw, text, position, font, max_width):
+    # Break the text into lines that fit within the specified width
+    lines = []
+    words = text.split()
+    line = ''
+
+    while words:
+        word = words.pop(0)
+        potential_line = line + word + ' '
+        potential_line_width = font.getlength(potential_line)
+        if potential_line_width > max_width:
+            if line:
+                lines.append(line.strip())
+            line = word + ' '
+        else:
+            line = potential_line
+
+    if line:
+        lines.append(line.strip())
+
+    y = position[1]
+    # Draw each line on the image, adjusting the vertical position for each line
+    for line in lines:
+        line_width = font.getlength(line)
+        ascent, descent = font.getmetrics()
+        line_height = ascent + descent        
+        x = position[0] + (max_width - line_width) // 2
+        draw.text((x, y), line, fill="black", font=font)
+        y += line_height
+
+
+# Making polaroidscreate_polaroid_image
 def create_polaroid_image(original_image_path, output_directory, caption=None):
     # Load the original image
     original_image = Image.open(original_image_path)
@@ -186,29 +218,28 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
 
     # Create a new image with white background
     polaroid_image = Image.new("RGB", (new_width, new_height), "white")
-
-    # Paste the original image onto the centered frame
     polaroid_image.paste(original_image, (frame_width, frame_width))
 
     # Optionally add a caption to the bottom part of the frame
     if caption:
         draw = ImageDraw.Draw(polaroid_image)
-        # Use a truetype font, you may need to adjust the path to a font file
-        font = ImageFont.truetype("arial.ttf", size=frame_width)
-        # Calculate text position (centered)
-        text_width, text_height = draw.textsize(caption, font=font)
-        text_x = (new_width - text_width) // 2
-        text_y = new_height - frame_width - text_height // 2
-        # Draw the text
-        draw.text((text_x, text_y), caption, fill="black", font=font)
+        font = ImageFont.truetype("./fonts/Caveat.ttf", size=int(frame_width* 0.5))
+        max_text_width = new_width - 2 * frame_width  # Maximum width for the text
+        text_position = ((new_width - max_text_width) // 2, new_height - 3 * frame_width)
+        draw_caption(draw, caption, text_position, font, max_text_width)
+
 
     # Generate a unique filename for the framed image using a timestamp
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     framed_image_filename = f'{timestamp}.jpg'
     framed_image_path = os.path.join(output_directory, framed_image_filename)
-
-    # Save the resulting image
     polaroid_image.save(framed_image_path)
+
+    try:
+        draw_caption(draw, caption, text_position, font, max_text_width)
+    except Exception as e:
+        print(f"Error drawing caption: {e}")
+
 
     return framed_image_path
 
