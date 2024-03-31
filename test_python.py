@@ -1,6 +1,28 @@
 from textblob import TextBlob
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import openai
+import re
 
+def clean_text(text):
+   # Remove URLs
+    text = re.sub(r'http\S+', '', text)
+    
+    # Remove mentions
+    text = re.sub(r'@\w+', '', text)
+    
+    # Remove hashtags
+    text = re.sub(r'#\w+', '', text)
+    
+    # Remove punctuation
+    text = re.sub(r'[^\w\s]', '', text)
+    
+    # Convert text to lowercase
+    text = text.lower()
+    
+    # Remove extra whitespaces
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    return text
 
 def generate_prompt(emotion, location, characters, atmosphere, event, art_style):
     # Construct the prompt
@@ -8,8 +30,10 @@ def generate_prompt(emotion, location, characters, atmosphere, event, art_style)
     return prompt
 
 def sentiment_percentage(text):
-    blob = TextBlob(text)
-    polarity = blob.sentiment.polarity  # Polarity score
+    cleaned_text = clean_text(text)
+    analyzer = SentimentIntensityAnalyzer()
+    scores = analyzer.polarity_scores(cleaned_text)
+    polarity = scores['compound']
 
     # Converting polarity to positive or negative percentage
     if polarity > 0:
@@ -17,15 +41,14 @@ def sentiment_percentage(text):
         percentage = polarity * 100  # Convert to percentage
     elif polarity < 0:
         sentiment = "negative"
-        percentage = abs(polarity) * 100  # Convert to percentage
+        percentage = abs(polarity) * 100
     else:
         sentiment = "neutral"
         percentage = 0  # Neutral sentiment
 
-    return sentiment, round(percentage, 2)  # Rounding off the percentage for readability
+    return sentiment, round(percentage, 2)
 
 def main():
-    # This function can be used to test the logic of generate_prompt and sentiment_percentage functions
     pass
 
 if __name__ == '__main__':

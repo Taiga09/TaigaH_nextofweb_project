@@ -10,10 +10,11 @@ import openai
 import tempfile
 import os
 from dotenv import load_dotenv
-from test_python import sentiment_percentage  # Ensure this function is implemented correctly
-import os, secrets
+import importlib
+import test_python
+import os
 #print(secrets.token_hex(16))
-
+importlib.reload(test_python)
 load_dotenv()
 
 app = Flask(__name__)
@@ -47,7 +48,7 @@ def home():
         }
 
         # Perform sentiment analysis
-        sentiment, score = sentiment_percentage(form_data['emotion'])
+        sentiment, score = test_python.sentiment_percentage(form_data['emotion'])
         print(f"Sentiment: {sentiment}, Score: {score}%")
 
         session['form_data'] = json.dumps(form_data)
