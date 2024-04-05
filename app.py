@@ -88,12 +88,19 @@ def sentiment_and_styles():
 
         # Extract other query parameteres
         sentiment = request.args.get('sentiment')
-        score = request.args.get('score')
-        
-        # Construct GPT prompt for art styles
-        # Convert sentiment score (string) into float
         score = float(request.args.get('score', 0))
-        gpt_prompt = f"Based on the provided emotion/mood '{sentiment}' and its sentiment score of ‘{score:.2f}’, suggest five art styles that complement this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a diverse range of styles that capture the essence of '{sentiment}' while inspiring creativity and imagination in the generated images."
+        
+        if 0 <= score < 20:
+            gpt_prompt = f"For a sentiment score of {score:.2f}, which indicates a slightly {sentiment} emotion, suggest five art styles that delicately capture the subtle nuances of this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a wide range of styles from different eras, cultures, and artistic movements that capture the nuances of '{sentiment}' at this particular score level. Ensure that the suggested art styles are distinctly different from those generated for other sentiment scores, even if the scores are relatively close. Inspire creativity and imagination in the generated images while maintaining a strong connection to the specific sentiment and score."
+        elif 20 <= score < 40:
+            gpt_prompt = f"For a sentiment score of {score:.2f}, which represents a moderately {sentiment} emotion, suggest five art styles that expressively convey the distinct flavors of this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a wide range of styles from different eras, cultures, and artistic movements that capture the nuances of '{sentiment}' at this particular score level. Ensure that the suggested art styles are distinctly different from those generated for other sentiment scores, even if the scores are relatively close. Inspire creativity and imagination in the generated images while maintaining a strong connection to the specific sentiment and score."
+        elif 40 <= score < 60:
+            gpt_prompt = f"For a sentiment score of {score:.2f}, which signifies a strongly {sentiment} emotion, suggest five art styles that boldly embody the intense characteristics of this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a wide range of styles from different eras, cultures, and artistic movements that capture the nuances of '{sentiment}' at this particular score level. Ensure that the suggested art styles are distinctly different from those generated for other sentiment scores, even if the scores are relatively close. Inspire creativity and imagination in the generated images while maintaining a strong connection to the specific sentiment and score."
+        # Add more conditions for other score ranges
+        else:
+            gpt_prompt = f"For a sentiment score of {score:.2f}, which indicates an extremely {sentiment} emotion, suggest five art styles that vividly encapsulate the profound depths of this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a wide range of styles from different eras, cultures, and artistic movements that capture the nuances of '{sentiment}' at this particular score level. Ensure that the suggested art styles are distinctly different from those generated for other sentiment scores, even if the scores are relatively close. Inspire creativity and imagination in the generated images while maintaining a strong connection to the specific sentiment and score."
+        
+        
         print(gpt_prompt)
 
         try:

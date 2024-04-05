@@ -46,6 +46,9 @@ def sentiment_percentage(text):
         sentiment = "neutral"
         percentage = 0  # Neutral sentiment
 
+    #score = round(percentage, 2)
+   
+
     return sentiment, round(percentage, 2)
 
 def main():
