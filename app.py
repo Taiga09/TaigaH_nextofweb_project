@@ -47,8 +47,10 @@ def home():
             'event': request.form.get('event', '')
         }
 
+        combined_text = f"{form_data['emotion']} {form_data['location']} {form_data['characters']} {form_data['atmosphere']} {form_data['event']}"
+        print("Combined_text:", combined_text)
         # Perform sentiment analysis
-        sentiment, score = test_python.sentiment_percentage(form_data['emotion'])
+        sentiment, score = test_python.sentiment_percentage(combined_text)
         print(f"Sentiment: {sentiment}, Score: {score}%")
 
         session['form_data'] = json.dumps(form_data)
