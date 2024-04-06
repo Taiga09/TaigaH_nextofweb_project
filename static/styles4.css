@@ -1,0 +1,29 @@
+.feedback-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 50px;
+  }
+  
+  .feedback-message {
+    font-size: 18px;
+    font-weight: bold;
+    color: green;
+    text-align: center;
+  }
+  
+  .back-to-home-wrapper {
+    text-align: center;
+  }
+  
+  .back-to-home-btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 16px;
+    display: inline-block;
+  }

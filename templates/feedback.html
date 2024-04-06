@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Generated Image</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles3.css') }}">
+  <title>Generated Image</title>
 </head>
 <body>
+  <div class="feedback-container">
     <!-- Email sent feedback -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
+      {% if messages %}
         {% for category, message in messages %}
-            <div class="{{ category }}">{{ message }}</div>
+          <div class="feedback-message {{ category }}">{{ message }}</div>
         {% endfor %}
-    {% endif %}
+      {% endif %}
     {% endwith %}
 
     <!-- Back to Home button -->
-    <a href="{{ url_for('home') }}" class="back-to-home-btn">Back to Home</a>   
-
+    <a href="{{ url_for('home') }}" class="back-to-home-btn">Back to Home</a>
+  </div>
 </body>
 </html>

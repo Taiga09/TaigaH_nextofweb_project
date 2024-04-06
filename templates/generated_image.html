@@ -2,25 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles3.css') }}">
     <title>Generated Image</title>
 </head>
 <body>
-    <h1>Your Generated Image</h1>
-    <h2>Like what you see? Add your email to get this photo!</h2>
+    <div class="container">
+        <div class="contents-container">
+            <div class="image-container">
+                {% if session['framed_image_filename'] %}
+                <img src="{{ url_for('static', filename=session['framed_image_filename']) }}" alt="Polaroid Image" class="polaroid-image">
+                {% else %}
+                <p>Sorry, there was an error displaying your image.</p>
+                {% endif %}
+            </div>
 
-    <form action ="{{ url_for('send_email') }}" method="post">
-        <input type="email" name="user_email" placeholder="Enter your email" required>
-        <button type="submit">Send Image</button>
-    </form>
+            <form action="{{ url_for('send_email') }}" method="post">
+                <div class="input-group">
+                    <div class="email">
+                        <input type="email" name="user_email" class="user-email" placeholder="Drop an email to get this photo!" required>
+                    </div>
 
-    <!-- Display an image on a screen -->
-    {% if session['framed_image_filename'] %}
-    <img src="{{ url_for('static', filename=session['framed_image_filename']) }}" alt="Polaroid Image">
-    {% else %}
-        <p>Sorry, there was an error displaying your image.</p>
-    {% endif %}
-
-
+                    <div class="send">
+                        <button type="submit" class="send-button">Send</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
