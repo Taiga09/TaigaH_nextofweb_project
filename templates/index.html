@@ -6,50 +6,50 @@
     <title>Suggested Art Styles</title>
 </head>
 <body>
-    <h2>Share your creative ideas</h2>
-    <form action="/" method="post">
-        <div class="input-background">
-            <input type="text" id="emotion" name="emotion" autocomplete="off"  placeholder="How did you feel?"><br>
-        </div> 
+    <div class="form-container">
+        <img src="" class="sticky-note"
+        <div class="content-container">
+            <div class="text-container">
+                <h2>ReminisceAI</h2>
+                <h3>Describe a cherished memory or moment you'd like to bring to life.</h3>
+            </div>  
 
-        <div class="input-background">
-            <input type="text" id="location" name="location" autocomplete="off"  placeholder="Location"><br>
-        </div> 
+            <div class="input-container">
+                <form action="/" method="post">
+                    <div class="longer-input">
+                        <div class="input-background">
+                            <input type="text" id="emotion" name="emotion" autocomplete="off"  placeholder="How did you feel?"><br>
+                        </div> 
+                    </div>
 
-        <div class="input-background">
-            <input type="text" id="characters" name="characters" autocomplete="off"  placeholder="characters"><br>
-        </div> 
+                    <div class="second-input-row">
+                        <div class="input-background">
+                            <input type="text" id="location" name="location" autocomplete="off"  placeholder="Location"><br>
+                        </div> 
 
-        <div class="input-background">
-            <input type="text" id="atmosphere" name="atmosphere" autocomplete="off"  placeholder="atmosphere"><br>
-        </div> 
-        
-        <div class="input-background">
-            <input type="text" id="event" name="event" autocomplete="off"  placeholder="event"><br>
-        </div> 
-        
-        <br>
-        <input type="submit" value="Submit">
-        <!--
-        <label for="emotion">Emotion / Mood:</label><br>
-        <input type="text" id="emotion" name="emotion" autocomplete="off"><br>
-        
-        <label for="location">Location:</label><br>
-        <input type="text" id="location" name="location" autocomplete="off"><br>
-        
-        <label for="characters">Characters / Objects:</label><br>
-        <input type="text" id="characters" name="characters" autocomplete="off"><br>
-        
-        <label for="atmosphere">Atmosphere:</label><br>
-        <input type="text" id="atmosphere" name="atmosphere" autocomplete="off"><br>
-        
-        <label for="event">Event / Action:</label><br>
-        <input type="text" id="event" name="event" autocomplete="off"><br>
-        
-    
-        -->
-         
-    </form>
+                        <div class="input-background">
+                            <input type="text" id="characters" name="characters" autocomplete="off"  placeholder="Characters"><br>
+                        </div> 
+                    </div>
+                    
+                    <div class="third-input-row">
+                        <div class="input-background">
+                            <input type="text" id="atmosphere" name="atmosphere" autocomplete="off"  placeholder="Atmosphere"><br>
+                        </div> 
+                        
+                        <div class="input-background">
+                            <input type="text" id="event" name="event" autocomplete="off"  placeholder="Event"><br>
+                        </div> 
+                    </div>
+                    
+                    <div class="button">
+                        <button type="submit" class="paper-button">Submit</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>  
+    </div>
     
     <div>
         {% for style in art_styles %}
