@@ -23,7 +23,7 @@ form {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 40px; 
+    gap: 32px; 
     margin: 0;
 }
 
@@ -39,10 +39,8 @@ form {
     justify-content: center; 
     align-items: center;
     width: 40%;
-    height: 80vh;
-    padding-left: 64px;
-    padding-right: 64px;
-    /*padding: 72px 64px 72px 64px;*/
+    height: 64vh;
+    padding: 64px 64px 64px 64px;
 }
 
 .top-image {
@@ -62,8 +60,11 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: 0;
+    justify-content: top;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: auto;
+    gap: 0;
 }
 
 .text-container{
@@ -71,25 +72,25 @@ form {
     flex-direction: column;
     align-items: center;
     /*gap: 8px;*/
-    height: 80px;
-    margin-bottom: 40px;
+    height: auto;
 
 }
 
 .input-container{
     width: 100%;
     padding: 0;
-    height: auto;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 24px;
 }
 
 .longer-input{
     display: flex;
     width: 100%;
-    height: 40px;
+    height: 48px;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
@@ -98,7 +99,7 @@ form {
 
 .second-input-row {
     width: 100%;
-    height: 40px;
+    height: 48px;
     display: flex;
     align-items: flex-start;
     gap: 18px;
@@ -106,7 +107,7 @@ form {
 
 .third-input-row {
     width: 100%;
-    height: 40px;
+    height: 48px;
     display: flex;
     align-items: flex-start;
     gap: 18px;
@@ -117,7 +118,7 @@ form {
     height: 60px;
     position: relative;
     display: inline-block;
-    margin-top: 40px;
+    margin-top: 56px;
 }
 
 .button input[type="submit"] {
@@ -168,12 +169,12 @@ h2 {
     color: #9d6a00;
     text-align: center;
     line-height: 48px; 
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     margin-top: 0;
     }
 
 h3 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 400;
     color: #9d6a00;
     text-align: center;
@@ -239,7 +240,7 @@ input, textarea {
     height: 56px;
     border-radius: 6px; 
     border: none;
-    padding: 12px 18px; 
+    padding: 8px 18px; 
     box-sizing: border-box; 
     margin: 0px;
 }
@@ -251,7 +252,7 @@ input, textarea {
     height: 56px;
     border-radius: 6px; 
     border: none;
-    padding: 12px 18px; 
+    padding: 8px 18px; 
     box-sizing: border-box; 
     margin: 0px;
 }
@@ -263,7 +264,7 @@ input, textarea {
     height: 56px;
     border-radius: 6px; 
     border: none;
-    padding: 12px 18px; 
+    padding: 8px 18px; 
     box-sizing: border-box; 
     margin: 0px;
 }
@@ -275,7 +276,7 @@ input, textarea {
     height: 56px;
     border-radius: 6px; 
     border: none;
-    padding: 12px 18px; 
+    padding: 8px 18px; 
     box-sizing: border-box; 
     margin: 0px;
 }
@@ -287,7 +288,7 @@ input, textarea {
     height: 56px;
     border-radius: 6px; 
     border: none;
-    padding: 12px 18px; 
+    padding: 8px 18px; 
     box-sizing: border-box; 
     margin: 0px;
 }
