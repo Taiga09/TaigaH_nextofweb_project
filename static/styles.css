@@ -38,9 +38,11 @@ form {
     flex-direction: column; 
     justify-content: center; 
     align-items: center;
-    width: 36%;
-    height: 60vh;
-    padding: 48px 64px 48px 64px;
+    width: 40%;
+    height: 80vh;
+    padding-left: 64px;
+    padding-right: 64px;
+    /*padding: 72px 64px 72px 64px;*/
 }
 
 .top-image {
@@ -60,7 +62,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
+    justify-content: center;
     margin: 0;
 }
 
@@ -68,15 +70,20 @@ form {
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    /*gap: 8px;*/
     height: 80px;
-    margin: 0;
+    margin-bottom: 40px;
+
 }
 
 .input-container{
     width: 100%;
     padding: 0;
     height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .longer-input{
@@ -110,6 +117,7 @@ form {
     height: 60px;
     position: relative;
     display: inline-block;
+    margin-top: 40px;
 }
 
 .button input[type="submit"] {
@@ -160,11 +168,12 @@ h2 {
     color: #9d6a00;
     text-align: center;
     line-height: 48px; 
-    margin: 0;
+    margin-bottom: 8px;
+    margin-top: 0;
     }
 
 h3 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 400;
     color: #9d6a00;
     text-align: center;
@@ -225,6 +234,7 @@ input, textarea {
 
 #emotion {
     background: url('images/text-input2.png') no-repeat center center;
+    font-size: 16px;
     width: 100%; 
     height: 56px;
     border-radius: 6px; 
@@ -236,6 +246,7 @@ input, textarea {
 
 #location {
     background: url('images/text-input2.png') no-repeat center center;
+    font-size: 16px;
     width: 100%; 
     height: 56px;
     border-radius: 6px; 
@@ -247,6 +258,7 @@ input, textarea {
 
 #characters {
     background: url('images/text-input2.png') no-repeat center center;
+    font-size: 16px;
     width: 100%; 
     height: 56px;
     border-radius: 6px; 
@@ -258,6 +270,7 @@ input, textarea {
 
 #atmosphere {
     background: url('images/text-input2.png') no-repeat center center;
+    font-size: 16px;
     width: 100%; 
     height: 56px;
     border-radius: 6px; 
@@ -269,6 +282,7 @@ input, textarea {
 
 #event {
     background: url('images/text-input2.png') no-repeat center center;
+    font-size: 16px;
     width: 100%;
     height: 56px;
     border-radius: 6px; 

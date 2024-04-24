@@ -187,6 +187,7 @@ def generate_image():
                 n=1,
                 size="1024x1024"
             )
+            
             image_url = response.data[0].url
 
             # Download the image to a temporary file
@@ -204,7 +205,7 @@ def generate_image():
 
             # Update the session or context with the filename of the polaroid images
             session['framed_image_filename'] = os.path.relpath(framed_image_filename, 'static')
-            
+        
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
 
@@ -249,6 +250,8 @@ def draw_caption(draw, text, position, font, max_width):
 def create_polaroid_image(original_image_path, output_directory, caption=None):
     # Load the original image
     original_image = Image.open(original_image_path)
+    print("Original imazge loaded successfully.")
+
 
     # Calculate the new size with the frame, assuming the frame width is 10% of the original image width
     frame_width = int(original_image.width * 0.08)
@@ -263,7 +266,13 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
     # Optionally add a caption to the bottom part of the frame
     if caption:
         draw = ImageDraw.Draw(polaroid_image)
-        font = ImageFont.truetype("./fonts/Caveat.ttf", size=int(frame_width* 0.5))
+
+        try:
+            font = ImageFont.truetype("./fonts/Caveat-Regular.ttf", size=int(frame_width * 0.5))
+            print("Font loaded successfully.")
+        except Exception as e:
+            print(f"Error loading font: {e}")
+
         max_text_width = new_width - 2 * frame_width  # Maximum width for the text
         caption_height = font.getmask(caption).size[1] # Get the height of caption
 
@@ -282,12 +291,14 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
     framed_image_filename = f'{timestamp}.jpg'
     framed_image_path = os.path.join(output_directory, framed_image_filename)
     polaroid_image.save(framed_image_path)
+    print("timestamp was created")
 
     try:
         draw_caption(draw, caption, text_position, font, max_text_width)
+        print("Caption drawn successfully.")
+
     except Exception as e:
         print(f"Error drawing caption: {e}")
-
 
     return framed_image_path
 
