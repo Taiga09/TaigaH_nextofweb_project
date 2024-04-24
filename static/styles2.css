@@ -88,7 +88,7 @@ form {
   
   .button-pair1,
   .button-pair2 {
-    height: 60px;
+    height: 48px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -137,14 +137,14 @@ form {
 
 .button {
     width: 56%;
-    height: 60px;
+    height: 48px;
     position: relative;
     display: inline-block;
 }
 
 .button input[type="submit"] {
     width: 100%;
-    height: 60px;
+    height: 48px;
 }
 
 h2 {

@@ -6,6 +6,7 @@
     <title>Generated Image</title>
 </head>
 <body>
+    <a href="{{ url_for('home') }}" class="home-link">Go back to home</a>
     <div class="container">
         <div class="contents-container">
             <div class="image-container">
@@ -14,12 +15,16 @@
                 {% else %}
                 <p>Sorry, there was an error displaying your image.</p>
                 {% endif %}
+
+                <img src="{{ url_for('static', filename='images/timestamp.png') }}" alt="Additional Image" class="stamp-image">
             </div>
 
             <form action="{{ url_for('send_email') }}" method="post">
                 <div class="input-group">
-                    <div class="email">
-                        <input type="email" name="user_email" class="user-email" placeholder="Drop an email to get this photo!" required>
+                    <div class="email-input">
+                        <div class="email-background">
+                            <input type="email" name="user_email" class="user-email" placeholder="Drop an email to get this photo!" required>
+                        </div>  
                     </div>
 
                     <div class="send">
