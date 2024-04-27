@@ -311,9 +311,32 @@ def send_email():
 
     if user_email and framed_image_filename:
         try:
-            msg = Message("Your Generated Image", recipients=[user_email])
+            # Create the email message with the custom body text
+            body_text = """
+Hi,
+The attached is your generated image.
+Hope you are enjoying our grad show. Thank you for visiting!
+
+
+
+
+Best regards,
+
+Taiga Haruyama (he|him|his)
+Interaction Design Spring Graduate '24
+ArtCenter College of Design
+
+Portfolio: https://www.taigahdesign.com/
+LinkedIn: https://www.linkedin.com/in/taiga-haruyama-976820164/
+Professional Email: taigaharuyama09@gmail.com
+Phone: +1 626-429-2951
+"""
+            msg = Message("Your Generated Image", recipients=[user_email], body=body_text)
+
+            # Attach the image
             with app.open_resource(os.path.join('static', framed_image_filename)) as img:
                 msg.attach(framed_image_filename, "image/jpeg", img.read())
+            
             # Send the email
             mail.send(msg)
             flash("Email sent successfully!", "success")  # Provide user feedback
@@ -321,6 +344,7 @@ def send_email():
             flash(f"An error occurred while sending the email: {e}", "error")  # Provide user feedback on failure
 
     return render_template('feedback.html')  # Render feedback template
+
 
 if __name__ == '__main__':
     app.run(debug=True)
