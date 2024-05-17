@@ -24,12 +24,12 @@ app.secret_key = os.getenv('SECRET_KEY')
 client = openai.OpenAI(api_key=openai_key)
 
 # Flask-Mail configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587  # Use 587 for TLS
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'taigah.spring24.accd@gmail.com'  # Your Gmail address
-app.config['MAIL_PASSWORD'] = 'jfpywhwqtkeokbam'  # Your App Password
-app.config['MAIL_DEFAULT_SENDER'] = 'taigah.spring24.accd@gmail.com'  # Your Gmail address (can be the same)
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 
