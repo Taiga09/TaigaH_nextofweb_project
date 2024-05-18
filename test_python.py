@@ -1,6 +1,5 @@
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import openai
 import re
 
 def clean_text(text):
