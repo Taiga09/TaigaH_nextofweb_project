@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify
 from flask_mail import Mail, Message
 from flask import send_from_directory
 from datetime import datetime
@@ -63,22 +63,21 @@ def login():
 
 @app.route('/oauth2callback')
 def oauth2callback():
+    if 'state' not in session:
+        return 'State not found in session', 400
+    
     state = session['state']
 
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        client_secrets_file,
-        scopes=scopes,
-        state=state
-    )
-    flow.redirect_uri = redirect_uri
-
+    flow = Flow.from_client_secrets_file(client_secrets_file, scopes=scopes, state=state)
+    flow.redirect_uri = url_for('oauth2callback', _external=True)
+    
     authorization_response = request.url
     flow.fetch_token(authorization_response=authorization_response)
-
+    
     credentials = flow.credentials
     session['credentials'] = credentials_to_dict(credentials)
-
-    return redirect(url_for('home'))
+    
+    return jsonify(session['credentials'])
 
 def credentials_to_dict(credentials):
     return {
