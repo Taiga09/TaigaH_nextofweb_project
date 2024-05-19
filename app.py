@@ -16,6 +16,8 @@ import google_auth_oauthlib.flow
 import google.oauth2.credentials
 import googleapiclient.discovery
 from googleapiclient.http import MediaFileUpload
+from google.auth.transport.requests import Request
+
 
 importlib.reload(test_python)
 load_dotenv()
@@ -303,38 +305,25 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
 
 @app.route('/login')
 def login():
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        client_secrets_file,
-        scopes=scopes
-    )
-    flow.redirect_uri = redirect_uri
-
-    authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        include_granted_scopes='true'
-    )
-
-    session['state'] = state
-
-    return redirect(authorization_url)
+    return authenticate()
 
 @app.route('/oauth2callback')
 def oauth2callback():
-    if 'state' not in session:
+    state = session.get('state')
+    if not state:
         return 'State not found in session', 400
     
-    state = session['state']
-
-    flow = Flow.from_client_secrets_file(client_secrets_file, scopes=scopes, state=state)
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRET_FILE, scopes=SCOPES, state=state)
     flow.redirect_uri = url_for('oauth2callback', _external=True)
-    
+
     authorization_response = request.url
     flow.fetch_token(authorization_response=authorization_response)
-    
+
     credentials = flow.credentials
     session['credentials'] = credentials_to_dict(credentials)
-    
-    return jsonify(session['credentials'])
+
+    return redirect(url_for('home'))
 
 def credentials_to_dict(credentials):
     return {
@@ -366,12 +355,18 @@ def upload_to_google_photos(image_path):
         return redirect(url_for('login'))
 
     media = MediaFileUpload(image_path, mimetype='image/jpeg')
-    response = service.mediaItems().upload(
-        body={'description': 'Generated Image'},
-        media_body=media
+    response = service.mediaItems().batchCreate(
+        body={
+            "newMediaItems": [
+                {
+                    "description": "Generated Image",
+                    "simpleMediaItem": {
+                        "uploadToken": media
+                    }
+                }
+            ]
+        }
     ).execute()
-
-    print(f"Image uploaded successfully. URL: {response['productUrl']}")
 
 
 @app.route('/send_email', methods=['POST'])
@@ -407,6 +402,26 @@ Phone: +1 626-429-2951
             flash(f"An error occurred while sending the email: {e}", "error")
 
     return render_template('feedback.html')
+
+# Path to your client_secret.json file
+CLIENT_SECRET_FILE = 'secrets/client_secret.json'
+SCOPES = ['https://www.googleapis.com/auth/photoslibrary']
+
+# Function to authenticate and get credentials
+def authenticate():
+    # Create the flow using the client secrets file
+    flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+        CLIENT_SECRET_FILE, SCOPES)
+
+    # Run the flow to get credentials
+    credentials = flow.run_local_server(port=0)
+
+    # Save the credentials for the next run
+    with open('token.json', 'w') as token:
+        token.write(credentials.to_json())
+
+    return credentials
+
 
 if __name__ == '__main__':
     app.run(debug=True)
