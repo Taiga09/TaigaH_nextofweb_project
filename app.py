@@ -266,7 +266,7 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
         draw = ImageDraw.Draw(polaroid_image)
 
         try:
-            font = ImageFont.truetype("./fonts/Caveat-Regular.ttf", size=int(frame_width * 0.5))
+            font = ImageFont.truetype("static/fonts/Caveat-Regular.ttf", size=int(frame_width * 0.5))
             print("Font loaded successfully.")
         except Exception as e:
             print(f"Error loading font: {e}")
