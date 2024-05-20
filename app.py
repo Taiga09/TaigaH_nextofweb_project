@@ -428,7 +428,7 @@ Phone: +1 626-429-2951
 def authenticate():
     # Create the flow using the client secrets file
     flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-        CLIENT_SECRET_FILE, SCOPES)
+        client_secrets_file, scopes)
 
     # Run the flow to get credentials
     credentials = flow.run_local_server(port=0)
