@@ -39,7 +39,7 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 mail = Mail(app)
 
 # Google OAuth2 configuration
-client_secrets_file = 'client_secret_127544895556-57153am15pq1cpmcpci35igj23nor1c7.apps.googleusercontent.com.json'
+client_secrets_file = 'secrets/client_secret_127544895556-57153am15pq1cpmcpci35igj23nor1c7.apps.googleusercontent.com.json'
 scopes = ['https://www.googleapis.com/auth/photoslibrary.appendonly']
 redirect_uri = 'https://reminisceai-e0bc7357649b.herokuapp.com/oauth2callback'
 
@@ -438,6 +438,7 @@ def authenticate():
         token.write(credentials.to_json())
 
     return credentials
+
 
 
 if __name__ == '__main__':
