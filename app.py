@@ -182,7 +182,7 @@ def generate_image():
 
         detailed_prompt = construct_detailed_prompt(characters, event, location, atmosphere, emotion, selected_style)
         print(f"Combined Prompt: {detailed_prompt}")
-        
+
         try:
             response = client.images.generate(
                 model="dall-e-3",
@@ -190,7 +190,7 @@ def generate_image():
                 n=1,
                 size="1024x1024"
             )
-            
+
             image_url = response.data[0].url
 
             response = requests.get(image_url)
@@ -206,7 +206,7 @@ def generate_image():
 
             # Upload to Google Photos
             upload_to_google_photos(framed_image_filename)
-        
+
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
 
@@ -214,6 +214,7 @@ def generate_image():
 
     else:
         return redirect(url_for('home'))
+
     
 # Define the function to draw text within a specified width
 def draw_caption(draw, text, position, font, max_width):
@@ -302,10 +303,22 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
 
     return framed_image_path
 
-
 @app.route('/login')
 def login():
-    return authenticate()
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        client_secrets_file,
+        scopes=scopes
+    )
+    flow.redirect_uri = redirect_uri
+
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
+
+    session['state'] = state
+
+    return redirect(authorization_url)
 
 @app.route('/oauth2callback')
 def oauth2callback():
@@ -314,7 +327,7 @@ def oauth2callback():
         return 'State not found in session', 400
     
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        CLIENT_SECRET_FILE, scopes=SCOPES, state=state)
+        client_secrets_file, scopes=scopes, state=state)
     flow.redirect_uri = url_for('oauth2callback', _external=True)
 
     authorization_response = request.url
@@ -347,15 +360,16 @@ def create_service():
         'photoslibrary', 'v1', credentials=credentials
     )
 
-
 def upload_to_google_photos(image_path):
     service = create_service()
     if service is None:
         flash('Please log in with Google to upload photos.', 'error')
         return redirect(url_for('login'))
 
+    print(f"Uploading image: {image_path}")
+
     media = MediaFileUpload(image_path, mimetype='image/jpeg')
-    response = service.mediaItems().batchCreate(
+    upload_response = service.mediaItems().batchCreate(
         body={
             "newMediaItems": [
                 {
@@ -367,6 +381,13 @@ def upload_to_google_photos(image_path):
             ]
         }
     ).execute()
+
+    if 'error' in upload_response:
+        print(f"An error occurred while uploading the image: {upload_response['error']}")
+        flash(f"An error occurred while uploading the image: {upload_response['error']}", 'error')
+    else:
+        print(f"Image uploaded successfully. Response: {upload_response}")
+        flash("Image uploaded successfully!", 'success')
 
 
 @app.route('/send_email', methods=['POST'])
