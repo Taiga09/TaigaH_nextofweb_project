@@ -424,10 +424,6 @@ Phone: +1 626-429-2951
 
     return render_template('feedback.html')
 
-# Path to your client_secret.json file
-CLIENT_SECRET_FILE = 'secrets/client_secret.json'
-SCOPES = ['https://www.googleapis.com/auth/photoslibrary']
-
 # Function to authenticate and get credentials
 def authenticate():
     # Create the flow using the client secrets file
