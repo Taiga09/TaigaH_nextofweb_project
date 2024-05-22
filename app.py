@@ -36,7 +36,9 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 mail = Mail(app)
 
 # Load the service account credentials
-service_account_info = json.load(open('path/to/your-service-account-key.json'))
+service_account_key_path = os.getenv('SERVICE_ACCOUNT_KEY_PATH')
+with open(service_account_key_path) as f:
+    service_account_info = json.load(f)
 credentials = service_account.Credentials.from_service_account_info(
     service_account_info,
     scopes=['https://www.googleapis.com/auth/photoslibrary.appendonly']
@@ -44,7 +46,8 @@ credentials = service_account.Credentials.from_service_account_info(
 
 # Build the Google Photos API client
 service = build('photoslibrary', 'v1', credentials=credentials)
-    
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
