@@ -35,10 +35,14 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 
-# Load the service account credentials
+
 service_account_key_path = os.getenv('SERVICE_ACCOUNT_KEY_PATH')
+if not service_account_key_path:
+    raise ValueError("The SERVICE_ACCOUNT_KEY_PATH environment variable is not set.")
+
 with open(service_account_key_path) as f:
     service_account_info = json.load(f)
+
 credentials = service_account.Credentials.from_service_account_info(
     service_account_info,
     scopes=['https://www.googleapis.com/auth/photoslibrary.appendonly']
