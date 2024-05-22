@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify
 from flask_mail import Mail, Message
 from flask import flash
-from flask import send_from_directory
 from datetime import datetime
 import requests
 from PIL import Image, ImageDraw, ImageFont
@@ -24,7 +23,8 @@ app = Flask(__name__)
 openai_key = os.getenv('OPENAI_KEY')
 app.secret_key = os.getenv('SECRET_KEY')
 
-client = openai.OpenAI(api_key=openai_key)
+# Initialize OpenAI client
+openai.api_key = openai_key
 
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
@@ -38,8 +38,11 @@ mail = Mail(app)
 
 # Decode the base64 encoded key from the environment variable
 service_account_key_base64 = os.getenv('SERVICE_ACCOUNT_KEY_BASE64')
-if service_account_key_base64 is None:
-    raise ValueError("No service account key provided in the environment variable SERVICE_ACCOUNT_KEY_BASE64")
+if not service_account_key_base64:
+    raise ValueError("The SERVICE_ACCOUNT_KEY_BASE64 environment variable is not set.")
+
+# Log the environment variable to verify it's set correctly
+print("SERVICE_ACCOUNT_KEY_BASE64:", service_account_key_base64[:50])  # Print only the first 50 characters for security
 
 service_account_info = json.loads(base64.b64decode(service_account_key_base64))
 
@@ -192,7 +195,7 @@ def generate_image():
         print(f"Combined Prompt: {detailed_prompt}")
 
         try:
-            response = client.images.generate(
+            response = openai.images.generate(
                 model="dall-e-3",
                 prompt=detailed_prompt,
                 n=1,
