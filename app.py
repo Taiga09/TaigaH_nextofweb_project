@@ -40,6 +40,14 @@ mail = Mail(app)
 
 # Google OAuth2 configuration
 client_secrets_file = 'secrets/client_secret_127544895556-57153am15pq1cpmcpci35igj23nor1c7.apps.googleusercontent.com.json'
+
+if not os.path.exists('secrets'):
+    os.makedirs('secrets')
+
+# Write the client secret to the file from the environment variable
+with open(client_secrets_file, 'w') as f:
+    f.write(os.getenv('GOOGLE_CLIENT_SECRET'))
+    
 scopes = ['https://www.googleapis.com/auth/photoslibrary.appendonly']
 redirect_uri = 'https://reminisceai-e0bc7357649b.herokuapp.com/oauth2callback'
 
