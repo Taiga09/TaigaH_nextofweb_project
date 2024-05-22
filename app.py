@@ -368,6 +368,7 @@ def create_service():
         'photoslibrary', 'v1', credentials=credentials
     )
 
+
 def upload_to_google_photos(image_path):
     service = create_service()
     if service is None:
@@ -376,26 +377,43 @@ def upload_to_google_photos(image_path):
 
     print(f"Uploading image: {image_path}")
 
-    media = MediaFileUpload(image_path, mimetype='image/jpeg')
-    upload_response = service.mediaItems().batchCreate(
-        body={
+    try:
+        # Upload the image to get the upload token
+        with open(image_path, 'rb') as img_file:
+            upload_token_response = service.mediaItems().upload(
+                media_body=MediaFileUpload(image_path, mimetype='image/jpeg'),
+                media_mime_type='image/jpeg'
+            ).execute()
+
+        upload_token = upload_token_response['uploadToken']
+
+        # Create the media item using the upload token
+        create_media_item_request_body = {
             "newMediaItems": [
                 {
                     "description": "Generated Image",
                     "simpleMediaItem": {
-                        "uploadToken": media
+                        "uploadToken": upload_token
                     }
                 }
             ]
         }
-    ).execute()
 
-    if 'error' in upload_response:
-        print(f"An error occurred while uploading the image: {upload_response['error']}")
-        flash(f"An error occurred while uploading the image: {upload_response['error']}", 'error')
-    else:
-        print(f"Image uploaded successfully. Response: {upload_response}")
-        flash("Image uploaded successfully!", 'success')
+        upload_response = service.mediaItems().batchCreate(
+            body=create_media_item_request_body
+        ).execute()
+
+        if 'error' in upload_response:
+            print(f"An error occurred while uploading the image: {upload_response['error']}")
+            flash(f"An error occurred while uploading the image: {upload_response['error']}", 'error')
+        else:
+            print(f"Image uploaded successfully. Response: {upload_response}")
+            flash("Image uploaded successfully!", 'success')
+
+    except Exception as e:
+        print(f"An error occurred while uploading the image: {e}")
+        flash(f"An error occurred while uploading the image: {e}", 'error')
+
 
 
 @app.route('/send_email', methods=['POST'])
