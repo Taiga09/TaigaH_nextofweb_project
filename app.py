@@ -12,11 +12,8 @@ import os
 from dotenv import load_dotenv
 import importlib
 import test_python
-import google_auth_oauthlib.flow
-import google.oauth2.credentials
-import googleapiclient.discovery
-from googleapiclient.http import MediaFileUpload
-from google.auth.transport.requests import Request
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 
 importlib.reload(test_python)
@@ -38,19 +35,16 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 
-# Google OAuth2 configuration
-client_secrets_file = 'secrets/client_secret_127544895556-57153am15pq1cpmcpci35igj23nor1c7.apps.googleusercontent.com.json'
+# Load the service account credentials
+service_account_info = json.load(open('path/to/your-service-account-key.json'))
+credentials = service_account.Credentials.from_service_account_info(
+    service_account_info,
+    scopes=['https://www.googleapis.com/auth/photoslibrary.appendonly']
+)
 
-if not os.path.exists('secrets'):
-    os.makedirs('secrets')
-
-# Write the client secret to the file from the environment variable
-with open(client_secrets_file, 'w') as f:
-    f.write(os.getenv('GOOGLE_CLIENT_SECRET'))
+# Build the Google Photos API client
+service = build('photoslibrary', 'v1', credentials=credentials)
     
-scopes = ['https://www.googleapis.com/auth/photoslibrary.appendonly']
-redirect_uri = 'https://reminisceai-e0bc7357649b.herokuapp.com/oauth2callback'
-
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
@@ -118,7 +112,6 @@ def sentiment_and_styles():
         # Add more conditions for other score ranges
         else:
             gpt_prompt = f"For a sentiment score of {score:.2f}, which indicates an extremely {sentiment} emotion, suggest five art styles that vividly encapsulate the profound depths of this sentiment. Provide the names of the art styles in one sentence, being separated by commas. Aim for a wide range of styles from different eras, cultures, and artistic movements that capture the nuances of '{sentiment}' at this particular score level. Ensure that the suggested art styles are distinctly different from those generated for other sentiment scores, even if the scores are relatively close. Inspire creativity and imagination in the generated images while maintaining a strong connection to the specific sentiment and score."
-        
         
         print(gpt_prompt)
 
@@ -212,9 +205,6 @@ def generate_image():
             os.unlink(temp_image_file.name)
 
             session['framed_image_filename'] = os.path.relpath(framed_image_filename, 'static')
-
-            # Upload to Google Photos
-            upload_to_google_photos(framed_image_filename)
 
         except Exception as e:
             print(f"An error occurred while generating the image: {e}")
@@ -312,114 +302,6 @@ def create_polaroid_image(original_image_path, output_directory, caption=None):
 
     return framed_image_path
 
-@app.route('/login')
-def login():
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        client_secrets_file,
-        scopes=scopes
-    )
-    flow.redirect_uri = redirect_uri
-
-    authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        include_granted_scopes='true'
-    )
-
-    session['state'] = state
-
-    return redirect(authorization_url)
-
-@app.route('/oauth2callback')
-def oauth2callback():
-    state = session.get('state')
-    if not state:
-        return 'State not found in session', 400
-    
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        client_secrets_file, scopes=scopes, state=state)
-    flow.redirect_uri = url_for('oauth2callback', _external=True)
-
-    authorization_response = request.url
-    flow.fetch_token(authorization_response=authorization_response)
-
-    credentials = flow.credentials
-    session['credentials'] = credentials_to_dict(credentials)
-
-    return redirect(url_for('home'))
-
-def credentials_to_dict(credentials):
-    return {
-        'token': credentials.token,
-        'refresh_token': credentials.refresh_token,
-        'token_uri': credentials.token_uri,
-        'client_id': credentials.client_id,
-        'client_secret': credentials.client_secret,
-        'scopes': credentials.scopes
-    }
-
-def create_service():
-    if 'credentials' not in session:
-        return None
-
-    credentials = google.oauth2.credentials.Credentials(
-        **session['credentials']
-    )
-
-    return googleapiclient.discovery.build(
-        'photoslibrary', 'v1', credentials=credentials
-    )
-
-
-def upload_to_google_photos(image_path):
-    service = create_service()
-    if service is None:
-        flash('Please log in with Google to upload photos.', 'error')
-        return redirect(url_for('login'))
-
-    print(f"Uploading image: {image_path}")
-
-    try:
-        # Upload the image to get the upload token
-        with open(image_path, 'rb') as img_file:
-            upload_token_response = service.mediaItems().upload(
-                media_body=MediaFileUpload(image_path, mimetype='image/jpeg'),
-                media_mime_type='image/jpeg'
-            ).execute()
-
-        if 'uploadToken' in upload_token_response:
-            upload_token = upload_token_response['uploadToken']
-            print(f"Upload token generated: {upload_token}")
-
-            # Create the media item using the upload token
-            create_media_item_request_body = {
-                "newMediaItems": [
-                    {
-                        "description": "Generated Image",
-                        "simpleMediaItem": {
-                            "uploadToken": upload_token
-                        }
-                    }
-                ]
-            }
-
-            upload_response = service.mediaItems().batchCreate(
-                body=create_media_item_request_body
-            ).execute()
-
-            if 'newMediaItemResults' in upload_response:
-                    print(f"Image uploaded successfully. Response: {upload_response}")
-                    flash("Image uploaded successfully!", 'success')
-            else:
-                print(f"An error occurred while creating the media item: {upload_response}")
-                flash(f"An error occurred while creating the media item: {upload_response}", 'error')
-        else:
-            print(f"An error occurred while getting the upload token: {upload_token_response}")
-            flash(f"An error occurred while getting the upload token: {upload_token_response}", 'error')
-
-    except Exception as e:
-        print(f"An error occurred while uploading the image: {e}")
-        flash(f"An error occurred while uploading the image: {e}", 'error')
-
 
 @app.route('/send_email', methods=['POST'])
 def send_email():
@@ -454,23 +336,6 @@ Phone: +1 626-429-2951
             flash(f"An error occurred while sending the email: {e}", "error")
 
     return render_template('feedback.html')
-
-# Function to authenticate and get credentials
-def authenticate():
-    # Create the flow using the client secrets file
-    flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-        client_secrets_file, scopes)
-
-    # Run the flow to get credentials
-    credentials = flow.run_local_server(port=0)
-
-    # Save the credentials for the next run
-    with open('token.json', 'w') as token:
-        token.write(credentials.to_json())
-
-    return credentials
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
