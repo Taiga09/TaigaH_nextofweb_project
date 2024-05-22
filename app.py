@@ -200,6 +200,7 @@ def generate_image():
             )
 
             image_url = response.data[0].url
+            print(f"Generated image URL: {image_url}")
 
             response = requests.get(image_url)
             temp_image_file = tempfile.NamedTemporaryFile(delete=False)
@@ -385,35 +386,39 @@ def upload_to_google_photos(image_path):
                 media_mime_type='image/jpeg'
             ).execute()
 
-        upload_token = upload_token_response['uploadToken']
+        if 'uploadToken' in upload_token_response:
+            upload_token = upload_token_response['uploadToken']
+            print(f"Upload token generated: {upload_token}")
 
-        # Create the media item using the upload token
-        create_media_item_request_body = {
-            "newMediaItems": [
-                {
-                    "description": "Generated Image",
-                    "simpleMediaItem": {
-                        "uploadToken": upload_token
+            # Create the media item using the upload token
+            create_media_item_request_body = {
+                "newMediaItems": [
+                    {
+                        "description": "Generated Image",
+                        "simpleMediaItem": {
+                            "uploadToken": upload_token
+                        }
                     }
-                }
-            ]
-        }
+                ]
+            }
 
-        upload_response = service.mediaItems().batchCreate(
-            body=create_media_item_request_body
-        ).execute()
+            upload_response = service.mediaItems().batchCreate(
+                body=create_media_item_request_body
+            ).execute()
 
-        if 'error' in upload_response:
-            print(f"An error occurred while uploading the image: {upload_response['error']}")
-            flash(f"An error occurred while uploading the image: {upload_response['error']}", 'error')
+            if 'newMediaItemResults' in upload_response:
+                    print(f"Image uploaded successfully. Response: {upload_response}")
+                    flash("Image uploaded successfully!", 'success')
+            else:
+                print(f"An error occurred while creating the media item: {upload_response}")
+                flash(f"An error occurred while creating the media item: {upload_response}", 'error')
         else:
-            print(f"Image uploaded successfully. Response: {upload_response}")
-            flash("Image uploaded successfully!", 'success')
+            print(f"An error occurred while getting the upload token: {upload_token_response}")
+            flash(f"An error occurred while getting the upload token: {upload_token_response}", 'error')
 
     except Exception as e:
         print(f"An error occurred while uploading the image: {e}")
         flash(f"An error occurred while uploading the image: {e}", 'error')
-
 
 
 @app.route('/send_email', methods=['POST'])
