@@ -6,6 +6,7 @@ from datetime import datetime
 import requests
 from PIL import Image, ImageDraw, ImageFont
 import json
+import base64
 import openai
 import tempfile
 import os
@@ -35,13 +36,12 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 
+# Decode the base64 encoded key from the environment variable
+service_account_key_base64 = os.getenv('SERVICE_ACCOUNT_KEY_BASE64')
+if service_account_key_base64 is None:
+    raise ValueError("No service account key provided in the environment variable SERVICE_ACCOUNT_KEY_BASE64")
 
-service_account_key_path = os.getenv('SERVICE_ACCOUNT_KEY_PATH')
-if not service_account_key_path:
-    raise ValueError("The SERVICE_ACCOUNT_KEY_PATH environment variable is not set.")
-
-with open(service_account_key_path) as f:
-    service_account_info = json.load(f)
+service_account_info = json.loads(base64.b64decode(service_account_key_base64))
 
 credentials = service_account.Credentials.from_service_account_info(
     service_account_info,
