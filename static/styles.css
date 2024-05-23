@@ -49,7 +49,7 @@ form {
     top: 0;
     left: 50%;
     z-index: 10;
-    transform-origin: top right;
+    transform: translateX(-50%);
 }
 
 .content-container {
