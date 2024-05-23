@@ -23,7 +23,7 @@ form {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 48px; 
+    gap: 44px; 
     margin: 0;
 }
 
@@ -169,7 +169,7 @@ h2 {
     color: #9d6a00;
     text-align: center;
     line-height: 48px; 
-    margin-bottom: 4px;
+    margin-bottom: 12px;
     margin-top: 0;
     }
 
