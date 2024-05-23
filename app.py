@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify
+from flask import Flask, request, render_template, redirect, url_for, session, flash
 from flask_mail import Mail, Message
 from flask import flash
 from flask import send_from_directory
@@ -173,7 +173,7 @@ def generate_image():
         print(f"Combined Prompt: {detailed_prompt}")
 
         try:
-            response = openai.images.generate(
+            response = client.images.generate(
                 model="dall-e-3",
                 prompt=detailed_prompt,
                 n=1,
