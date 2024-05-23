@@ -48,8 +48,8 @@ form {
     width: 28%;
     top: 0;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%); 
     z-index: 10;
+    transform-origin: top right;
 }
 
 .content-container {
