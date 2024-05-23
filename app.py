@@ -21,8 +21,7 @@ app = Flask(__name__)
 openai_key = os.getenv('OPENAI_KEY')
 app.secret_key = os.getenv('SECRET_KEY')
 
-# Initialize OpenAI client
-openai.api_key = openai_key
+client = openai.OpenAI(api_key=openai_key)
 
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
