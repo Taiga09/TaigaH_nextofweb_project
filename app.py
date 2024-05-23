@@ -12,8 +12,6 @@ import os
 from dotenv import load_dotenv
 import importlib
 import test_python
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
 
 
 importlib.reload(test_python)
@@ -35,25 +33,6 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
-
-# Decode the base64 encoded key from the environment variable
-service_account_key_base64 = os.getenv('SERVICE_ACCOUNT_KEY_BASE64')
-if not service_account_key_base64:
-    raise ValueError("The SERVICE_ACCOUNT_KEY_BASE64 environment variable is not set.")
-
-# Log the environment variable to verify it's set correctly
-print("SERVICE_ACCOUNT_KEY_BASE64:", service_account_key_base64[:50])  # Print only the first 50 characters for security
-
-service_account_info = json.loads(base64.b64decode(service_account_key_base64))
-
-credentials = service_account.Credentials.from_service_account_info(
-    service_account_info,
-    scopes=['https://www.googleapis.com/auth/photoslibrary.appendonly']
-)
-
-# Build the Google Photos API client
-service = build('photoslibrary', 'v1', credentials=credentials)
-
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
