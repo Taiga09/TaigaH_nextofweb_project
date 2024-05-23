@@ -1,11 +1,11 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify
 from flask_mail import Mail, Message
 from flask import flash
+from flask import send_from_directory
 from datetime import datetime
 import requests
 from PIL import Image, ImageDraw, ImageFont
 import json
-import base64
 import openai
 import tempfile
 import os
