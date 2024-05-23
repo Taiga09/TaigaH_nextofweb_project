@@ -84,7 +84,7 @@ form {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 0px;
+    margin-top: 12px;
 }
 
 .longer-input{
