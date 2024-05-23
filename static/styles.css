@@ -118,6 +118,7 @@ form {
     height: 60px;
     position: relative;
     display: inline-block;
+    margin-top: 20px;
 }
 
 .button input[type="submit"] {
