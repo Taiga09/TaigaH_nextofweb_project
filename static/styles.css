@@ -46,11 +46,11 @@ form {
 .top-image {
     position: absolute;
     width: 36%;
-    top: -16%;
+    top: -17%;
     left: 50%;
     z-index: 10;
     transform: translateX(-50%);
-    filter: drop-shadow(0 3px 4px rgba(81, 56, 6, 0.25));
+    filter: drop-shadow(0 3px 4px rgba(81, 56, 6, 0.15));
 }
 
 .content-container {
