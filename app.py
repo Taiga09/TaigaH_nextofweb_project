@@ -301,12 +301,10 @@ def send_email():
             body_text = """
 Hi,
 The attached is your generated image.
-Hope you are enjoying our grad show. Thank you for visiting!
+Thank you for visiting!
 
 Best regards,
 Taiga Haruyama (he|him|his)
-Interaction Design Spring Graduate '24
-ArtCenter College of Design
 
 Portfolio: https://www.taigahdesign.com/
 LinkedIn: https://www.linkedin.com/in/taiga-haruyama-976820164/
