@@ -65,16 +65,14 @@ form {
     margin-top: 0;
     margin-bottom: 0;
     overflow: auto;
-    gap: 40px;
 }
 
 .text-container{
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    /*gap: 8px;*/
     height: auto;
-
+    margin-bottom: 3vh;
 }
 
 .input-container{
