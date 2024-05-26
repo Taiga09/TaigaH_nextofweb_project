@@ -118,7 +118,6 @@ form {
 .paper-button {
     position: relative;
     width: 100%;
-    height: 56px;
     border: none;
     background-image: url('images/torn-paper.png');
     background-size: cover;
@@ -129,6 +128,7 @@ form {
     font-size: 20px;
     color: #9d6a00;
     background-color: transparent;
+    padding: 12px;
 }
 
 .paper-button::after {
@@ -144,6 +144,7 @@ form {
     background-position: center;
     filter: drop-shadow(0 3px 4px rgba(81, 56, 6, 0.25));
     z-index: -1;
+    transform: scale(1.05);
   }
 
 
