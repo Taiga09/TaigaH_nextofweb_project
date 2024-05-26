@@ -71,7 +71,7 @@ form {
     flex-direction: column;
     align-items: center;
     height: auto;
-    margin-bottom: 3vh;
+    margin-bottom: 64px;
 }
 
 .input-container{
