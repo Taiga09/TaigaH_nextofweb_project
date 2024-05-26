@@ -38,7 +38,7 @@ form {
     justify-content: center; 
     align-items: center;
     width: 40%;
-    padding: 56px 64px 56px 64px;
+    padding: 60px 64px 60px 64px;
 }
 
 .top-image {
@@ -106,7 +106,6 @@ form {
 
 .button {
     width: 56%;
-    height: 60px;
     position: relative;
     display: inline-block;
 }
