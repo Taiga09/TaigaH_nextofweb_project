@@ -65,7 +65,7 @@ form {
     margin-top: 0;
     margin-bottom: 0;
     overflow: auto;
-    gap: 0;
+    gap: 40;
 }
 
 .text-container{
