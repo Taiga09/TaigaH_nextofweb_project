@@ -75,7 +75,6 @@ form {
 .input-container{
     width: 100%;
     padding: 0;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -110,7 +109,6 @@ form {
     height: 60px;
     position: relative;
     display: inline-block;
-    margin-top: 20px;
 }
 
 .button input[type="submit"] {
