@@ -61,7 +61,7 @@ form {
     justify-content: center;
     margin-top: 0;
     margin-bottom: 0;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .text-container{
@@ -128,7 +128,8 @@ form {
     font-size: 20px;
     color: #9d6a00;
     background-color: transparent;
-    padding: 12px;
+    padding: 20px;
+    overflow: visible;
 }
 
 .paper-button::after {
