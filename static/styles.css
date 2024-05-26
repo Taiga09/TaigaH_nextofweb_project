@@ -39,7 +39,6 @@ form {
     justify-content: center; 
     align-items: center;
     width: 40%;
-    height: 64vh;
     padding: 56px 64px 40px 64px;
 }
 
@@ -71,7 +70,7 @@ form {
     flex-direction: column;
     align-items: center;
     height: auto;
-    margin-bottom: 64px;
+    margin-bottom: 56px;
 }
 
 .input-container{
