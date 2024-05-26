@@ -178,3 +178,7 @@
   font-family: 'Caveat-Regular', sans-serif;
   font-size: 24px;
 }
+
+.feedback-message {
+  font-size: 24px; /* Adjust the font size as needed */
+}
