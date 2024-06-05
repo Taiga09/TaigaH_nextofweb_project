@@ -24,7 +24,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    width: 28vw;
+    width: 90%;
     max-width: 600px;
 }
   
@@ -200,4 +200,35 @@
   font-weight: 400;
   text-align: center;
   margin-top: 12px;
+}
+
+/* for mobile */
+@media (max-width: 768px) {
+  body {
+      padding: 0 5px; /* Adjust padding for mobile */
+  }
+
+  .container {
+      width: 100%; /* Make container full width on mobile */
+      padding: 20px 10px; /* Adjust padding for mobile */
+  }
+
+  .stamp-image {
+      width: 30%; /* Adjust stamp image width for mobile */
+  }
+
+  .home-link {
+      font-size: 1.5em; /* Adjust link font size for mobile */
+      top: 20px; /* Adjust position for mobile */
+      left: 20px; /* Adjust position for mobile */
+  }
+
+  .input-group {
+      flex-direction: column; /* Stack inputs vertically on mobile */
+      height: auto; /* Adjust height */
+  }
+
+  .send {
+      flex: 0 1 auto; /* Adjust send button flex for mobile */
+  }
 }
