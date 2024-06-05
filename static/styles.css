@@ -47,6 +47,7 @@ form {
 .top-image {
     position: absolute;
     width: 36%;
+    max-width: 180px;
     top: -17%;
     left: 50%;
     z-index: 10;
@@ -109,6 +110,7 @@ form {
 
 .button {
     width: 56%;
+    max-width: 320px;
     position: relative;
     display: inline-block;
     margin-top: 12px;
@@ -156,21 +158,21 @@ form {
 
 
 h2 {
-    font-size: 40px;
+    font-size: 2.5em;
     font-weight: 400;
     color: #9d6a00;
     text-align: center;
-    line-height: 48px; 
+    line-height: 1.2em; 
     margin-bottom: 4px;
     margin-top: 0;
     }
 
 h3 {
-    font-size: 22px;
+    font-size: 1.4em;
     font-weight: 400;
     color: #9d6a00;
     text-align: center;
-    line-height: 24px; 
+    line-height: 1.1em; 
     margin: 0;
 }
 
